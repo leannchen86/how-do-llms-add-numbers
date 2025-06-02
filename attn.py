@@ -232,9 +232,13 @@ class SelfAttentionAnimation(Scene):
             vector_entries = [f"{val:.1f}" for val in values]
             vector_matrix = Matrix(
                 [[entry] for entry in vector_entries], 
-                element_to_mobject=lambda x: Tex(x, font_size=16)
+                element_to_mobject=lambda x: Tex(x, font_size=32)
             )
             vector_matrix.set_color(RED)
+            
+            # Scale down just the brackets to keep them smaller
+            brackets = vector_matrix.get_brackets()
+            brackets.scale([0.5, 1.0, 1])  # Scale: [x_scale, y_scale, z_scale] - narrower but taller
             
             # Position each column vector horizontally side by side (like matrix columns)
             vector_matrix.move_to(start_pos + RIGHT * i * 1.2)
@@ -348,7 +352,7 @@ class SelfAttentionAnimation(Scene):
         
         attention_matrix = Matrix(
             attention_entries,
-            element_to_mobject=lambda x: Tex(x, font_size=12, color=WHITE)
+            element_to_mobject=lambda x: Tex(x, font_size=32, color=WHITE)
         )
         q_vertical_center = self.q_vectors.get_center()[1]  # Y coordinate of Q matrix center
         kt_horizontal_center = self.kt_vectors.get_center()[0]  # X coordinate of K^T matrix center
