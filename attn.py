@@ -164,9 +164,7 @@ class SelfAttentionAnimation(Scene):
         # Step 3: Transform individual vectors to matrices
         self.transform_vectors_to_matrices()
         self.wait(2)
-        
-        # Step 4: Show the multiplication process
-        self.animate_matrix_multiplication()
+
 
     def show_individual_q_vectors(self):
         """Show individual Q vectors as horizontal row vectors positioned where Q matrix will be"""
@@ -326,42 +324,3 @@ class SelfAttentionAnimation(Scene):
         self.kt_matrix_brackets = kt_matrix_brackets
         self.q_matrix_label = q_matrix_label
         self.kt_matrix_label = kt_matrix_label
-
-    def animate_matrix_multiplication(self):
-        """Show the Q·K^T multiplication process with proper positioning"""
-        # Add multiplication symbol positioned between Q and K^T matrices
-        mult_symbol = MathTex(r"\times", font_size=48, color=WHITE)
-        mult_symbol.move_to(LEFT * 0.1 + UP * 0.15)  # Between the matrices
-        self.play(Write(mult_symbol))
-        
-        # Create attention matrix result positioned in the middle
-        attention_matrix = self.create_attention_matrix_result()
-        
-    def create_attention_matrix_result(self):
-        """Create the resulting attention matrix positioned in the center"""
-        # Calculate actual results from our toy values (Q·K^T)
-        attention_entries = [
-            ["0.83", "0.32", "0.71", "0.42"],  # Q_26 · [K^T columns]
-            ["0.36", "0.85", "0.45", "0.69"],  # Q_+ · [K^T columns]
-            ["0.66", "0.58", "0.87", "0.92"],  # Q_55 · [K^T columns]
-            ["0.44", "0.34", "0.69", "0.65"]   # Q_= · [K^T columns]
-        ]
-        
-        attention_matrix = Matrix(
-            attention_entries,
-            element_to_mobject=lambda x: Tex(x, font_size=32, color=WHITE)
-        )
-        q_vertical_center = self.q_vectors.get_center()[1]  # Y coordinate of Q matrix center
-        kt_horizontal_center = self.kt_vectors.get_center()[0]  # X coordinate of K^T matrix center
-        attention_matrix.move_to([kt_horizontal_center, q_vertical_center, 0])
-        
-        # Add labels using Tex
-        result_label = Tex(r"\text{Attention Scores}", font_size=18, color=ORANGE)
-        result_label.next_to(attention_matrix, UP, buff=0.3)
-        
-        self.play(
-            Create(attention_matrix),
-            Write(result_label),
-        )
-        
-        return attention_matrix
