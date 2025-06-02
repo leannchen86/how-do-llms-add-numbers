@@ -3,9 +3,9 @@ import numpy as np
 
 class Intro(Scene):
     def construct(self):
-        title = Text("First things first—LLMs don’t see numbers or words the way we do.").scale(0.8)
-        subtitle = Text(
-            "They see tokens. Then each token → an embedding vector."
+        title = Tex(r"\text{First things first---LLMs don't see numbers or words the way we do.}", font_size=30).scale(0.8)
+        subtitle = Tex(
+            r"\text{They see tokens. Then each token} \rightarrow \text{an embedding vector.}", font_size=24
         ).next_to(title, DOWN, buff=0.5)
         self.play(FadeIn(title), FadeIn(subtitle))
         self.wait(2)
@@ -60,8 +60,8 @@ class EmbeddingSpace(Scene):
             x_range=[-1,1,1], y_range=[-1,1,1],
             x_length=4, y_length=3
         ).to_edge(UP)
-        label = Text(
-            "Embedding space\n(1024-D → 2D proj.)"
+        label = Tex(
+            r"\text{Embedding space}\\\text{(1024-D} \rightarrow \text{2D proj.)}", font_size=24
         ).next_to(axes, RIGHT)
         arrow = Vector([0.8, 0.5, 0]).shift(axes.c2p(0,0))
         arrow_label = MathTex(r"\vec{e}_{26}").next_to(arrow.get_end(), UR)
@@ -91,8 +91,8 @@ class LatentCloud(Scene):
             Dot(axes.c2p(-0.4,0.2), color=GREEN, radius=0.08),
             Dot(axes.c2p(0.1,-0.7), color=RED, radius=0.08),
         )
-        caption = Text(
-            "Every token → its embedding\nin the same high-dimensional space."
+        caption = Tex(
+            r"\text{Every token} \rightarrow \text{its embedding}\\\text{in the same high-dimensional space.}", font_size=24
         ).to_edge(DOWN)
 
         self.play(*[FadeIn(pt) for pt in cloud])
