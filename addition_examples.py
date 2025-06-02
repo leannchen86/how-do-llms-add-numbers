@@ -1,101 +1,81 @@
 from manim import *
+import random
 
-class MassiveTrainingData(Scene):
+class AdditionExamples(Scene):
     def construct(self):
-        # Create a much larger set of addition examples (40+)
-        equation_data = [
-            "1 + 2 = 3",
-            "3 + 4 = 7", 
-            "10 + 19 = 29",
-            "5 + 7 = 12",
-            "8 + 6 = 14",
-            "23 + 45 = 68",
-            "37 + 26 = 63",
-            "42 + 58 = 100",
-            "9 + 3 = 12",
-            "15 + 7 = 22",
-            "16 + 27 = 43",
-            "19 + 31 = 50",
-            "45 + 55 = 100",
-            "72 + 39 = 111",
-            "125 + 75 = 200",
-            "64 + 17 = 81",
-            "33 + 67 = 100",
-            "82 + 9 = 91",
-            "11 + 22 = 33",
-            "44 + 88 = 132",
-            "12 + 24 = 36",
-            "51 + 49 = 100",
-            "27 + 73 = 100",
-            "13 + 57 = 70",
-            "61 + 18 = 79",
-            "256 + 144 = 400",
-            "99 + 1 = 100",
-            "88 + 12 = 100",
-            "77 + 23 = 100",
-            "66 + 34 = 100",
-            "55 + 45 = 100",
-            "144 + 36 = 180",
-            "225 + 75 = 300",
-            "17 + 28 = 45",
-            "29 + 63 = 92",
-            "41 + 59 = 100",
-            "38 + 62 = 100",
-            "49 + 51 = 100",
-            "123 + 456 = 579",
-            "321 + 654 = 975",
+        # Create training examples for a simple addition model
+        self.create_training_examples()
+        
+    def create_training_examples(self):
+        # Title
+        title = Tex(r"\text{Training Data: Addition Examples}", font_size=36).to_edge(UP)
+        self.play(Write(title))
+        self.wait(1)
+        
+        # Generate multiple addition examples
+        examples = [
+            ("12 + 34", "46"),
+            ("25 + 17", "42"), 
+            ("9 + 8", "17"),
+            ("33 + 22", "55"),
+            ("45 + 15", "60"),
+            ("7 + 13", "20")
         ]
         
-        # Define grid dimensions
-        cols = 5
-        rows = 8
+        # Create a grid of examples
+        example_groups = VGroup()
         
-        # Create math text objects for each equation and make them smaller
-        equations = [MathTex(eq).scale(0.6) for eq in equation_data]
-        
-        # Position equations in a grid
-        equation_group = VGroup(*equations).arrange_in_grid(
-            rows=rows, cols=cols, buff=0.4
-        ).scale(0.9).center()
-        
-        # Create a title to emphasize the "training data" concept
-        title = Text("Training Data: Addition Examples", font_size=36).to_edge(UP)
-        self.play(Write(title), run_time=0.5)
-        
-        # Group equations by row
-        equation_rows = []
-        for i in range(rows):
-            start_idx = i * cols
-            end_idx = min(start_idx + cols, len(equations))
-            if start_idx < len(equations):
-                row_equations = equations[start_idx:end_idx]
-                equation_rows.append(VGroup(*row_equations))
-        
-        # Phase 1: Rapidly introduce equations row by row
-        for i, row in enumerate(equation_rows):
-            # Make rows appear faster as we go to convey increasing pace
-            run_time = max(0.3 - i * 0.03, 0.1)
+        for i, (problem, answer) in enumerate(examples):
+            # Create input-output pair
+            input_box = Rectangle(width=2.5, height=0.8, color=BLUE, fill_opacity=0.3)
+            input_text = Tex(rf"\text{{{problem}}}", font_size=18)
+            input_text.move_to(input_box)
+            input_group = VGroup(input_box, input_text)
             
-            # Slightly different animation for each row to add visual variety
-            if i % 3 == 0:
-                self.play(FadeIn(row, shift=0.1*DOWN), run_time=run_time)
-            elif i % 3 == 1:
-                self.play(Write(row), run_time=run_time)
+            # Arrow
+            arrow = Arrow(ORIGIN, RIGHT * 1.5, stroke_width=3)
+            
+            # Output box
+            output_box = Rectangle(width=1.5, height=0.8, color=GREEN, fill_opacity=0.3)
+            output_text = Tex(answer, font_size=18)
+            output_text.move_to(output_box)
+            output_group = VGroup(output_box, output_text)
+            
+            # Arrange horizontally
+            example = VGroup(input_group, arrow, output_group)
+            example.arrange(RIGHT, buff=0.3)
+            
+            example_groups.add(example)
+        
+        # Arrange examples in a grid (2 columns, 3 rows)
+        rows = VGroup()
+        for i in range(0, len(example_groups), 2):
+            if i + 1 < len(example_groups):
+                row = VGroup(example_groups[i], example_groups[i + 1])
+                row.arrange(RIGHT, buff=2)
             else:
-                self.play(AddTextLetterByLetter(row), run_time=run_time)
+                row = example_groups[i]
+            rows.add(row)
         
-        self.wait(0.5)  # Brief pause to see all equations
+        rows.arrange(DOWN, buff=1)
+        rows.move_to(ORIGIN + DOWN * 0.5)
         
-        # Phase 2: Rapidly fade out rows in reverse order
-        # First half of rows fade one by one
-        for row in equation_rows[::-1][:len(equation_rows)//2]:
-            self.play(FadeOut(row), run_time=0.2)
+        # Animate examples appearing
+        for row in rows:
+            if isinstance(row, VGroup) and len(row) > 1:
+                self.play(*[FadeIn(example, shift=UP*0.5) for example in row], run_time=1)
+            else:
+                self.play(FadeIn(row, shift=UP*0.5), run_time=1)
+            self.wait(0.5)
         
-        # Remaining rows disappear more quickly in groups
-        remaining_rows = equation_rows[:len(equation_rows)//2]
-        if remaining_rows:
-            remaining_group = VGroup(*remaining_rows)
-            self.play(FadeOut(remaining_group), run_time=0.3)
+        self.wait(2)
         
-        # Fade out title
-        self.play(FadeOut(title), run_time=0.2)
+        # Add explanation
+        explanation = Tex(
+            r"\text{The model learns to map arithmetic expressions to their results}",
+            font_size=24,
+            color=GRAY
+        ).to_edge(DOWN)
+        
+        self.play(Write(explanation))
+        self.wait(2)

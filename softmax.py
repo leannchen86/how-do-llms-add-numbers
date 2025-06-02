@@ -2,66 +2,56 @@ from manim import *
 import numpy as np
 
 class SoftmaxVisualization(Scene):
+    def softmax(self, x):
+        """
+        Compute softmax values for array x.
+        Uses numerical stability trick: subtract max value before exponentiating.
+        """
+        x = np.array(x)
+        # Subtract max for numerical stability
+        x_shifted = x - np.max(x)
+        exp_x = np.exp(x_shifted)
+        return exp_x / np.sum(exp_x)
+    
     def construct(self):
         # Title
-        title = Text("Softmax Function", font_size=48)
+        title = Tex(r"\text{Softmax Function}", font_size=48)
         title.to_edge(UP)
         self.play(Write(title))
-        
-        # Input values
-        input_values = [-2, 0, 3, 1]
-        
-        # Calculate softmax
-        exp_values = [np.exp(x) for x in input_values]
-        sum_exp = sum(exp_values)
-        softmax_values = [exp_val / sum_exp for exp_val in exp_values]
-        
-        # Create softmax curve
-        axes = Axes(
-            x_range=[-4, 4, 1],
-            y_range=[0, 1, 0.2],
-            x_length=8,
-            y_length=4,
-            axis_config={"color": WHITE},
-            x_axis_config={"numbers_to_include": np.arange(-4, 5, 1)},
-            y_axis_config={"numbers_to_include": np.arange(0, 1.1, 0.2)},
-        )
-        
-        axes_labels = axes.get_axis_labels(x_label="Input", y_label="Output")
-        
-        self.play(Create(axes), Write(axes_labels))
-        
-        # Softmax curve for 2-component case
-        def softmax_single(x, other_val=0):
-            exp_x = np.exp(x)
-            exp_other = np.exp(other_val)
-            return exp_x / (exp_x + exp_other)
-        
-        softmax_curve = axes.plot(
-            lambda x: softmax_single(x, 0),
-            color=BLUE,
-            x_range=[-4, 4],
-        )
-        
-        self.play(Create(softmax_curve))
         self.wait(1)
         
-        # Clear for comparison
-        self.play(FadeOut(axes), FadeOut(axes_labels), FadeOut(softmax_curve), FadeOut(title))
+        # Clean up
+        self.play(FadeOut(title))
         
-        # Before vs After comparison
-        before_softmax = Text("Before Softmax", font_size=28, color=RED)
-        before_softmax.to_edge(LEFT, buff=2).shift(UP*1.8)
+        # Test input values (including negatives)
+        input_values = [2.0, -1.0, 0.5, -0.3]
         
-        after_softmax = Text("After Softmax", font_size=28, color=BLUE)
-        after_softmax.to_edge(RIGHT, buff=2).shift(UP*1.8)
+        # Calculate softmax using proper function
+        softmax_values = self.softmax(input_values)
         
-        self.play(Write(before_softmax))
-        self.play(Write(after_softmax))
+        # Create before/after visualization with shared baseline
+        self.create_bar_comparison(input_values, softmax_values)
+        
+        # Show formula
+        self.show_softmax_formula()
+        
+        self.wait(2)
+
+    def create_bar_comparison(self, input_values, softmax_values):
+        """Create side-by-side bar chart with shared baseline"""
+        
+        # Labels for sections
+        before_softmax = Tex(r"\text{Before Softmax}", font_size=28, color=RED)
+        before_softmax.move_to(LEFT * 4.5 + UP * 3)
+        
+        after_softmax = Tex(r"\text{After Softmax}", font_size=28, color=BLUE)
+        after_softmax.move_to(RIGHT * 2.5 + UP * 3)
+        
+        self.play(Write(before_softmax), Write(after_softmax))
         
         # Define common baseline
         baseline_y = -0.5
-        baseline_txt = Text("baseline", font_size=25, color=WHITE)
+        baseline_txt = Tex(r"\text{baseline}", font_size=25, color=WHITE)
         
         # Create a long flashlight baseline that sweeps across the entire scene
         full_baseline = Line(
@@ -95,11 +85,11 @@ class SoftmaxVisualization(Scene):
             # All bars align to baseline - positive go up, negative go down
             if val >= 0:
                 bar.move_to(x_pos + UP*(baseline_y + height/2))
-                value_label = Text(f"{val}", font_size=24, weight=BOLD)
+                value_label = Tex(f"{val}", font_size=24)
                 value_label.next_to(bar, UP, buff=0.1)
             else:
                 bar.move_to(x_pos + UP*(baseline_y - height/2))
-                value_label = Text(f"{val}", font_size=24, weight=BOLD)
+                value_label = Tex(f"{val}", font_size=24)
                 value_label.next_to(bar, DOWN, buff=0.1)
             
             before_bars.add(bar, value_label)
@@ -115,7 +105,7 @@ class SoftmaxVisualization(Scene):
             # All probability bars start from baseline and go up
             bar.move_to(x_pos + UP*(baseline_y + height/2))
             
-            prob_label = Text(f"{val:.3f}", font_size=20, weight=BOLD, color=WHITE)
+            prob_label = Tex(f"{val:.3f}", font_size=20, color=WHITE)
             prob_label.next_to(bar, UP, buff=0.1)
             
             after_bars.add(bar, prob_label)
@@ -147,7 +137,7 @@ class SoftmaxVisualization(Scene):
         sum_symbol.flip(RIGHT)  # Flip horizontally
         
         # Create the text part
-        sum_text_part = Text("the bars (probability) = 1.00", font_size=24, color=BLUE, weight=BOLD)
+        sum_text_part = Tex(r"\text{the bars (probability) = 1.00}", font_size=24, color=BLUE)
         
         # Position them together
         sum_display = VGroup(sum_symbol, sum_text_part)
@@ -158,4 +148,35 @@ class SoftmaxVisualization(Scene):
         
         self.play(Write(sum_display))
         
+        self.wait(2)
+        
+        # Clean up
+        self.play(
+            FadeOut(before_softmax),
+            FadeOut(after_softmax),
+            FadeOut(before_bars),
+            FadeOut(after_bars),
+            FadeOut(sum_display)
+        )
+
+    def show_softmax_formula(self):
+        """Show the mathematical formula for softmax"""
+        formula = MathTex(
+            r"\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}",
+            font_size=48
+        )
+        formula.move_to(ORIGIN)
+        
+        self.play(Write(formula))
+        self.wait(3)
+        
+        # Add explanation
+        explanation = Tex(
+            r"\text{Converts any real numbers into probabilities that sum to 1}",
+            font_size=24,
+            color=GRAY
+        )
+        explanation.next_to(formula, DOWN, buff=1)
+        
+        self.play(Write(explanation))
         self.wait(2)

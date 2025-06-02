@@ -4,7 +4,7 @@ import numpy as np
 class SelfAttentionAnimation(Scene):
     def construct(self):
         # Title
-        title = Text("Self-Attention Mechanism", font_size=48).to_edge(UP)
+        title = Tex(r"\text{Self-Attention Mechanism}", font_size=48).to_edge(UP)
         self.play(Write(title))
         self.wait(1)
         self.play(FadeOut(title))
@@ -17,7 +17,7 @@ class SelfAttentionAnimation(Scene):
         self.animate_qkv_transformation()
         self.wait(2)
         
-        # NEW STEP: Show attention formula and highlight Q*K^T
+        # NEW STEP: Show attention formula and highlight Q·K^T
         self.show_attention_formula_and_highlight()
         self.wait(3)
         
@@ -26,14 +26,17 @@ class SelfAttentionAnimation(Scene):
         self.wait(3)
 
     def show_attention_formula_and_highlight(self):
-        """Fallback approach using Text objects to completely avoid LaTeX issues"""
+        """Fallback approach using Tex/MathTex objects to avoid Pango issues"""
         
-        # Create the formula using Text objects
-        formula_text = Text("Attention(Q, K, V) = Softmax((Q·K^T)/√d_k) V", font_size=36)
+        # Create the formula using MathTex for proper math rendering
+        formula_text = MathTex(
+            r"\mathrm{Attention}(Q,\,K,\,V) \;=\; \mathrm{Softmax}\!\Bigl(\tfrac{Q \cdot K^T}{\sqrt{d_k}}\Bigr)\,V",
+            font_size=36
+        )
         formula_text.move_to(ORIGIN)
         
-        # Create highlighted Q·K^T
-        highlighted_qkt = Text("Q·K^T", font_size=36, color=YELLOW)
+        # Create highlighted Q·K^T with MathTex
+        highlighted_qkt = MathTex(r"Q \cdot K^T", font_size=36, color=YELLOW)
         # Position it approximately where it appears in the formula
         highlighted_qkt.move_to(formula_text.get_center() + LEFT * 0.5)
         
@@ -52,8 +55,8 @@ class SelfAttentionAnimation(Scene):
         )
         self.wait(2)
         
-        # Add explanatory text
-        explanation = Text("We'll focus on computing Q·K^T first", font_size=24, color=WHITE)
+        # Add explanatory text using Tex
+        explanation = Tex(r"We'll focus on computing $Q \cdot K^T$ first", font_size=24, color=WHITE)
         explanation.next_to(formula_text, DOWN, buff=1)
         self.play(Write(explanation))
         self.wait(1.5)
@@ -67,23 +70,23 @@ class SelfAttentionAnimation(Scene):
 
     def animate_tokenization(self):
         """Animate the tokenization step exactly as written"""
-        # Create tokens exactly as in notes
-        token_text = Text("Tokens:", font_size=32).move_to(UP * 2.5 + LEFT * 5)
+        # Create tokens exactly as in notes, using Tex for consistency
+        token_text = Tex(r"\text{Tokens:}", font_size=32).move_to(UP * 2.5 + LEFT * 5)
         self.play(Write(token_text))
         
-        # The exact tokens from the notes with more spacing: "26", "+", "55", "="
+        # The exact tokens from the notes with proper quotes
         self.tokens = VGroup(
-            Text('"26"', font_size=28),
-            Text('"+"', font_size=28),
-            Text('"55"', font_size=28),
-            Text('"="', font_size=28)
+            Tex(r'"26"', font_size=28),
+            Tex(r'"+"', font_size=28),
+            Tex(r'"55"', font_size=28),
+            Tex(r'"="', font_size=28)
         ).arrange(RIGHT, buff=1.5).next_to(token_text, RIGHT, buff=1)
         
         self.play(Write(self.tokens))
         
         # Initialize groups that will be used later
         self.arrow_groups = VGroup()
-        self.qkv_groups = VGroup()  # Fix: Initialize qkv_groups
+        self.qkv_groups = VGroup()  # Initialize qkv_groups
         
         self.token_text = token_text
 
@@ -95,20 +98,26 @@ class SelfAttentionAnimation(Scene):
         # Process each token individually
         for i, (token, label) in enumerate(zip(self.tokens, token_labels)):
             # Create 3 arrows for this token - one for Q, one for K, one for V
-            arrow_q = Arrow(start=token.get_bottom() + LEFT * 0.4, 
-                        end=token.get_bottom() + LEFT * 0.4 + DOWN * 1.2, 
-                        stroke_width=3, max_tip_length_to_length_ratio=0.2, color=BLUE)
-            arrow_k = Arrow(start=token.get_bottom(), 
-                        end=token.get_bottom() + DOWN * 1.2, 
-                        stroke_width=3, max_tip_length_to_length_ratio=0.2, color=RED)
-            arrow_v = Arrow(start=token.get_bottom() + RIGHT * 0.4, 
-                        end=token.get_bottom() + RIGHT * 0.4 + DOWN * 1.2, 
-                        stroke_width=3, max_tip_length_to_length_ratio=0.2, color=GREEN)
+            arrow_q = Arrow(
+                start=token.get_bottom() + LEFT * 0.4, 
+                end=token.get_bottom() + LEFT * 0.4 + DOWN * 1.2, 
+                stroke_width=3, max_tip_length_to_length_ratio=0.2, color=BLUE
+            )
+            arrow_k = Arrow(
+                start=token.get_bottom(), 
+                end=token.get_bottom() + DOWN * 1.2, 
+                stroke_width=3, max_tip_length_to_length_ratio=0.2, color=RED
+            )
+            arrow_v = Arrow(
+                start=token.get_bottom() + RIGHT * 0.4, 
+                end=token.get_bottom() + RIGHT * 0.4 + DOWN * 1.2, 
+                stroke_width=3, max_tip_length_to_length_ratio=0.2, color=GREEN
+            )
             
             token_arrows = VGroup(arrow_q, arrow_k, arrow_v)
             self.arrow_groups.add(token_arrows)
             
-            # Create arrows for this token
+            # Show the arrows
             self.play(Create(token_arrows), run_time=0.5)
             
             # Position Q, K, V at the end of their respective arrows
@@ -172,14 +181,16 @@ class SelfAttentionAnimation(Scene):
             [0.1, 0.3, 0.7]   # Q_=
         ]
         
-        # Position down and to the left where the Q matrix will be (moved up from -2.5 to -1.5)
+        # Position down and to the left where the Q matrix will be
         start_pos = LEFT * 4 + DOWN * 0.3
         
         for i, (label, values) in enumerate(zip(token_labels, q_values)):
-            # Create horizontal row vector with brackets
+            # Create horizontal row vector with brackets, using Tex for numbers
             vector_entries = [f"{val:.1f}" for val in values]
-            vector_matrix = Matrix([vector_entries], 
-                                 element_to_mobject=lambda x: Text(x, font_size=16))
+            vector_matrix = Matrix(
+                [vector_entries], 
+                element_to_mobject=lambda x: Tex(x, font_size=16)
+            )
             vector_matrix.set_color(BLUE)
             
             # Position each row vector vertically stacked (like matrix rows)
@@ -193,7 +204,7 @@ class SelfAttentionAnimation(Scene):
             self.q_vectors.add(vector_group)
         
         # Add Q vectors title
-        q_title = Text("Individual Q Vectors:", font_size=24, color=BLUE)
+        q_title = Tex(r"\text{Individual Q Vectors:}", font_size=24, color=BLUE)
         q_title.next_to(self.q_vectors, UP, buff=0.5)
         
         self.play(Write(q_title), Create(self.q_vectors))
@@ -212,28 +223,30 @@ class SelfAttentionAnimation(Scene):
             [0.5, 0.3, 0.8]   # K_=
         ]
         
-        # Position up and to the right where the K^T matrix will be (moved down from +2 to +1)
+        # Position up and to the right where the K^T matrix will be
         start_pos = RIGHT * 0.2 + UP * 1.9
         
         for i, (label, values) in enumerate(zip(token_labels, k_values)):
-            # Create vertical column vector with brackets
+            # Create vertical column vector with brackets, using Tex for numbers
             vector_entries = [f"{val:.1f}" for val in values]
-            vector_matrix = Matrix([[entry] for entry in vector_entries], 
-                                 element_to_mobject=lambda x: Text(x, font_size=16))
+            vector_matrix = Matrix(
+                [[entry] for entry in vector_entries], 
+                element_to_mobject=lambda x: Tex(x, font_size=16)
+            )
             vector_matrix.set_color(RED)
             
             # Position each column vector horizontally side by side (like matrix columns)
             vector_matrix.move_to(start_pos + RIGHT * i * 1.2)
             
             # Add subscript label below
-            label_text = MathTex(f"K^T_{{{label}}}", font_size=20, color=RED)
+            label_text = MathTex(r"K^T_{" + label + r"}", font_size=20, color=RED)
             label_text.next_to(vector_matrix, DOWN, buff=0.2)
             
             vector_group = VGroup(vector_matrix, label_text)
             self.kt_vectors.add(vector_group)
         
         # Add K vectors title
-        kt_title = Text("Individual K Vectors:", font_size=24, color=RED)
+        kt_title = Tex(r"\text{Individual K Vectors:}", font_size=24, color=RED)
         kt_title.next_to(self.kt_vectors, UP, buff=0.3)
         
         self.play(Write(kt_title), Create(self.kt_vectors))
@@ -256,8 +269,8 @@ class SelfAttentionAnimation(Scene):
         q_center_y = (q_top + q_bottom) / 2
         
         # Create Q matrix brackets that properly encompass all Q vectors INCLUDING labels
-        q_bracket_left = MathTex("[", font_size=250, color=BLUE)
-        q_bracket_right = MathTex("]", font_size=250, color=BLUE)
+        q_bracket_left = MathTex(r"[", font_size=250, color=BLUE)
+        q_bracket_right = MathTex(r"]", font_size=250, color=BLUE)
         q_bracket_left.move_to([q_left, q_center_y, 0])
         q_bracket_right.move_to([q_right, q_center_y, 0])
         q_matrix_brackets = VGroup(q_bracket_left, q_bracket_right)
@@ -270,8 +283,8 @@ class SelfAttentionAnimation(Scene):
         kt_center_y = (kt_top + kt_bottom) / 2
         
         # Create K^T matrix brackets that properly encompass all K^T vectors
-        kt_bracket_left = MathTex("[", font_size=150, color=RED)
-        kt_bracket_right = MathTex("]", font_size=150, color=RED)
+        kt_bracket_left = MathTex(r"[", font_size=150, color=RED)
+        kt_bracket_right = MathTex(r"]", font_size=150, color=RED)
         kt_bracket_left.move_to([kt_left, kt_center_y, 0])
         kt_bracket_right.move_to([kt_right, kt_center_y, 0])
         kt_matrix_brackets = VGroup(kt_bracket_left, kt_bracket_right)
@@ -287,11 +300,11 @@ class SelfAttentionAnimation(Scene):
             individual_brackets_k.add(k_vector_group[0].get_brackets())
         
         # Add matrix labels - position Q label further left to avoid overlap
-        q_matrix_label = MathTex("Q", font_size=32, color=BLUE)
+        q_matrix_label = MathTex(r"Q", font_size=32, color=BLUE)
         q_matrix_label.move_to([q_left - 0.8, q_center_y, 0])  # Moved further left
         
-        kt_matrix_label = MathTex("K^T", font_size=32, color=RED)
-        kt_matrix_label.move_to([(kt_right + kt_left)/2, kt_top + 0.4, 0])
+        kt_matrix_label = MathTex(r"K^T", font_size=32, color=RED)
+        kt_matrix_label.move_to([(kt_right + kt_left) / 2, kt_top + 0.4, 0])
         
         # Transform: individual brackets merge into large brackets
         self.play(
@@ -312,7 +325,7 @@ class SelfAttentionAnimation(Scene):
     def animate_matrix_multiplication(self):
         """Show the Q·K^T multiplication process with proper positioning"""
         # Add multiplication symbol positioned between Q and K^T matrices
-        mult_symbol = Text("×", font_size=48, color=WHITE)
+        mult_symbol = MathTex(r"\times", font_size=48, color=WHITE)
         mult_symbol.move_to(LEFT * 0.1 + UP * 0.15)  # Between the matrices
         self.play(Write(mult_symbol))
         
@@ -332,14 +345,16 @@ class SelfAttentionAnimation(Scene):
             ["0.44", "0.34", "0.69", "0.65"]   # Q_= · [K^T columns]
         ]
         
-        attention_matrix = Matrix(attention_entries,
-                                element_to_mobject=lambda x: Text(x, font_size=12, color=WHITE))
+        attention_matrix = Matrix(
+            attention_entries,
+            element_to_mobject=lambda x: Tex(x, font_size=12, color=WHITE)
+        )
         q_vertical_center = self.q_vectors.get_center()[1]  # Y coordinate of Q matrix center
         kt_horizontal_center = self.kt_vectors.get_center()[0]  # X coordinate of K^T matrix center
         attention_matrix.move_to([kt_horizontal_center, q_vertical_center, 0])
         
-        # Add labels
-        result_label = Text("Attention Scores", font_size=18, color=ORANGE)
+        # Add labels using Tex
+        result_label = Tex(r"\text{Attention Scores}", font_size=18, color=ORANGE)
         result_label.next_to(attention_matrix, UP, buff=0.3)
         
         self.play(
@@ -352,15 +367,17 @@ class SelfAttentionAnimation(Scene):
     def show_key_computations(self):
         """Show a few key dot product computations"""
         # Show how Q_26 · K^T_26 produces the first attention score
-        comp_text = MathTex(r"Q_{26} \cdot K^T_{26} = [0.2, 0.8, 0.1] \cdot [0.3, 0.7, 0.2] = 0.83", 
-                           font_size=16, color=YELLOW)
+        comp_text = MathTex(
+            r"Q_{26} \cdot K^T_{26} \;=\; [0.2,\,0.8,\,0.1] \cdot [0.3,\,0.7,\,0.2] \;=\; 0.83",
+            font_size=16, color=YELLOW
+        )
         comp_text.move_to(DOWN * 3.5)  # Below everything
         
         self.play(Write(comp_text))
         self.wait(2)
         
-        # Highlight the concept
-        final_note = Text("Each cell shows how much one token 'attends' to another", 
-                         font_size=16, color=GREEN)
+        # Highlight the concept with Tex
+        final_note = Tex(r"Each cell shows how much one token 'attends' to another", font_size=16, color=GREEN)
         final_note.move_to(DOWN * 4.2)
         self.play(Write(final_note))
+        self.wait(1.5)

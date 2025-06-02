@@ -24,7 +24,7 @@ class ExtendedAttentionCalculation(Scene):
         self.create_attention_matrix()
         
         # Add multiplication symbol
-        mult_symbol = Text("×", font_size=48, color=WHITE)
+        mult_symbol = MathTex(r"\times", font_size=48, color=WHITE)
         mult_symbol.move_to(LEFT * 0.1 + UP * 0.15)  # Original position
         
         # Display everything at once since this continues from previous scene
@@ -47,7 +47,7 @@ class ExtendedAttentionCalculation(Scene):
         
         # Create matrix with tighter spacing
         self.q_matrix = Matrix(q_values, 
-                              element_to_mobject=lambda x: Text(x, font_size=16, color=BLUE),
+                              element_to_mobject=lambda x: Tex(x, font_size=16, color=BLUE),
                               h_buff=0.8,  # Horizontal spacing between elements
                               v_buff=0.6)  # Vertical spacing between elements
         self.q_matrix.move_to(LEFT * 4 + DOWN * 0.3)  # Original position
@@ -80,7 +80,7 @@ class ExtendedAttentionCalculation(Scene):
         
         # Create matrix with tighter spacing
         self.kt_matrix = Matrix(kt_values,
-                               element_to_mobject=lambda x: Text(x, font_size=16, color=RED),
+                               element_to_mobject=lambda x: Tex(x, font_size=16, color=RED),
                                h_buff=0.6,  # Horizontal spacing between elements
                                v_buff=0.4)  # Vertical spacing between elements
         self.kt_matrix.move_to(RIGHT * 0.2 + UP * 1.2)  # Original position area
@@ -113,7 +113,7 @@ class ExtendedAttentionCalculation(Scene):
         ]
         
         self.attention_matrix = Matrix(attention_entries,
-                                     element_to_mobject=lambda x: Text(x, font_size=12, color=WHITE if x != "?" else YELLOW),
+                                     element_to_mobject=lambda x: Tex(x, font_size=12, color=WHITE if x != "?" else YELLOW),
                                      h_buff=0.5,  # Tighter horizontal spacing
                                      v_buff=0.4)  # Tighter vertical spacing
         
@@ -121,7 +121,7 @@ class ExtendedAttentionCalculation(Scene):
         self.attention_matrix.move_to(RIGHT * 2.5 + DOWN * 0.3)
         
         # Add label
-        result_label = Text("Attention Scores", font_size=18, color=ORANGE)
+        result_label = Tex(r"\text{Attention Scores}", font_size=18, color=ORANGE)
         result_label.next_to(self.attention_matrix, UP, buff=0.3)
         
         self.attention_matrix_group = VGroup(self.attention_matrix, result_label)
@@ -130,7 +130,7 @@ class ExtendedAttentionCalculation(Scene):
         """Animate the Q_= row calculations with each K^T column"""
         
         # Add title for this section
-        calculation_title = Text("Computing Q_= attention with all tokens", font_size=24, color=YELLOW)
+        calculation_title = MathTex(r"\text{Computing } Q_{=} \text{ attention with all tokens}", font_size=24, color=YELLOW)
         calculation_title.to_edge(UP)
         self.play(Write(calculation_title))
         self.wait(1)
@@ -157,7 +157,7 @@ class ExtendedAttentionCalculation(Scene):
         self.play(FadeOut(calculation_title))
         
         # Final summary
-        summary = Text("Q_= now knows how much to attend to each token!", 
+        summary = MathTex(r"Q_{=} \text{ now knows how much to attend to each token!}", 
                       font_size=20, color=GREEN)
         summary.to_edge(DOWN)
         self.play(Write(summary))
@@ -189,7 +189,7 @@ class ExtendedAttentionCalculation(Scene):
         
         # Calculate final result
         dot_product = sum(q * k for q, k in zip(q_values, k_values))
-        result_text = Text(f"= {dot_product:.2f}", font_size=20, color=GREEN)
+        result_text = MathTex(f"= {dot_product:.2f}", font_size=20, color=GREEN)
         result_text.next_to(step_calcs, RIGHT, buff=0.3)
         self.play(Write(result_text))
         
@@ -242,7 +242,7 @@ class ExtendedAttentionCalculation(Scene):
         q_str = f"[{q_values[0]}, {q_values[1]}, {q_values[2]}]"
         k_str = f"[{k_values[0]}, {k_values[1]}, {k_values[2]}]"
         
-        calc_text = Text(f"Q_= · K^T_{token_name} = {q_str} · {k_str}", 
+        calc_text = MathTex(rf"Q_{{=}} \cdot K^T_{{{token_name}}} = {q_str} \cdot {k_str}", 
                         font_size=16, color=WHITE)
         calc_text.move_to(DOWN * 2.8)
         return calc_text
@@ -253,40 +253,19 @@ class ExtendedAttentionCalculation(Scene):
         for i, (q, k) in enumerate(zip(q_values, k_values)):
             steps.append(f"({q}×{k})")
         
-        step_text = Text(f"= {' + '.join(steps)}", font_size=16, color=BLUE)
+        step_text = MathTex(f"= {' + '.join(steps)}", font_size=16, color=BLUE)
         step_text.move_to(DOWN * 3.2)
         return step_text
 
     def update_attention_matrix_cell(self, row, col, new_value):
-        """Update a specific cell in the attention matrix with background highlight"""
-        # Get the current matrix entries
-        entries = self.attention_matrix.get_entries()
-        target_entry = entries[row * 4 + col]  # 4 columns per row
+        """Update a specific cell in the attention matrix"""
+        # Get the element at the specified position
+        matrix_entries = self.attention_matrix.get_entries()
+        entry_index = row * 4 + col  # Assuming 4 columns
         
-        # Create new text with the calculated value
-        new_text = Text(new_value, font_size=12, color=GREEN)
-        new_text.move_to(target_entry.get_center())
+        # Create new text element
+        new_text = MathTex(new_value, font_size=12, color=GREEN)
+        new_text.move_to(matrix_entries[entry_index])
         
-        # Create background highlight for the cell
-        cell_highlight = Rectangle(
-            width=target_entry.get_width() + 0.2,
-            height=target_entry.get_height() + 0.1,
-            fill_color=GREEN,
-            fill_opacity=0.3,
-            stroke_width=0
-        )
-        cell_highlight.move_to(target_entry.get_center())
-        
-        # Animate the replacement with background highlight
-        self.play(
-            FadeIn(cell_highlight),
-            run_time=0.5
-        )
-        self.play(
-            Transform(target_entry, new_text),
-            run_time=0.8
-        )
-        self.play(
-            FadeOut(cell_highlight),
-            run_time=0.5
-        )
+        # Replace the entry
+        self.play(Transform(matrix_entries[entry_index], new_text))

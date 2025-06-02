@@ -1,11 +1,12 @@
 from manim import *
+import numpy as np
 
 class VectorComparison(Scene):
     def construct(self):
         # Title
-        title = Text("Sparse vs Dense Vectors").scale(0.8)
+        title = Tex(r"\text{Sparse vs Dense Vectors}").scale(0.8)
+        title.to_edge(UP)
         self.play(Write(title))
-        self.play(title.animate.to_edge(UP))
         
         # Create sparse and dense vector data
         sparse_vector = [0, 0, 3, 0, 2, 0, 0, 1, 0, 0]
@@ -107,12 +108,12 @@ class VectorComparison(Scene):
         counter_group = VGroup()
         
         # Title for the counter
-        counter_title = Text("Keyword Frequencies", font_size=20)
+        counter_title = Tex(r"\text{Keyword Frequencies}", font_size=20)
         counter_group.add(counter_title)
         
         # Create counter visuals
         for keyword, count in counts.items():
-            keyword_text = Text(f"{keyword}:", font_size=18)
+            keyword_text = Tex(rf"\text{{{keyword}:}}", font_size=18)
             
             # Create count circles
             count_circles = VGroup()
@@ -123,7 +124,7 @@ class VectorComparison(Scene):
             count_circles.arrange(RIGHT, buff=0.1)
             
             # Add count number
-            count_text = Text(f"{count}", font_size=18).next_to(count_circles, RIGHT)
+            count_text = Tex(f"{count}", font_size=18).next_to(count_circles, RIGHT)
             
             row = VGroup(keyword_text, count_circles, count_text).arrange(RIGHT, buff=0.3)
             counter_group.add(row)
@@ -152,7 +153,7 @@ class VectorComparison(Scene):
             ])
             
             # Add actual text for the document (small)
-            doc_text = Text(doc, font_size=14)
+            doc_text = Tex(rf"\text{{{doc}}}", font_size=14)
             doc_text.set_width(rect.width - 0.4)
             doc_text.move_to(rect)
             
@@ -169,7 +170,7 @@ class VectorComparison(Scene):
                         end_idx = start_idx + len(keyword)
                         
                         # Create highlighted keyword with background highlight
-                        keyword_text = Text(doc[start_idx:end_idx], font_size=14, color=BLACK)
+                        keyword_text = Tex(rf"\text{{{doc[start_idx:end_idx]}}}", font_size=14, color=BLACK)
                         highlight_box = Rectangle(
                             height=keyword_text.height + 0.05,
                             width=keyword_text.width + 0.05,
@@ -199,7 +200,7 @@ class VectorComparison(Scene):
         doc_rects.arrange(DOWN, buff=0.2)
         
         # Add label
-        label = Text("Documents", font_size=20).next_to(doc_rects, UP)
+        label = Tex(r"\text{Documents}", font_size=20).next_to(doc_rects, UP)
         
         return VGroup(label, doc_rects)
     
@@ -212,7 +213,7 @@ class VectorComparison(Scene):
         
         # Add dimension indices
         dim_indices = VGroup(*[
-            Text(f"{i}", font_size=12).next_to(cell, DOWN, buff=0.1)
+            Tex(f"{i}", font_size=12).next_to(cell, DOWN, buff=0.1)
             for i, cell in enumerate(cells)
         ])
         
@@ -228,14 +229,14 @@ class VectorComparison(Scene):
         
         # Add values
         values = VGroup(*[
-            Text(f"{val:.1f}" if isinstance(val, float) else str(val), 
+            Tex(f"{val:.1f}" if isinstance(val, float) else str(val), 
                  font_size=16, 
                  color=BLACK if val != 0 and (isinstance(val, int) or abs(val) > 0.3) else WHITE
                 ).move_to(cell)
             for val, cell in zip(vector, cells)
         ])
         
-        label_text = Text(label, font_size=20).next_to(cells, LEFT)
+        label_text = Tex(rf"\text{{{label}}}", font_size=20).next_to(cells, LEFT)
         return VGroup(cells, values, dim_indices, label_text)
     
     def create_keyword_connections(self, doc_viz, freq_counter, sparse_visual, keywords):
@@ -273,7 +274,8 @@ class VectorComparison(Scene):
                     highlight_box = highlight_group[0]  # The highlight box
                     keyword_text = highlight_group[1]  # The keyword text
                     
-                    if keyword_text.text.lower() == keyword.lower():
+                    # Compare against the original keyword instead of trying to get text from Tex object
+                    if keyword.lower() in str(keyword_text).lower():
                         # Create dashed line from keyword to frequency counter
                         dashed_line = DashedLine(
                             start=highlight_box.get_edge_center(RIGHT),
@@ -292,16 +294,18 @@ class VectorComparison(Scene):
         labels = VGroup()
         freq_rows = freq_counter[1:]  # Skip the title
         cells = sparse_visual[0]
-        values = sparse_visual[1]
+        
+        # Get the original sparse vector values
+        sparse_vector = [0, 0, 3, 0, 2, 0, 0, 1, 0, 0]
         
         for i, (keyword, idx) in enumerate(keywords.items()):
             freq_row = freq_rows[i]
             cell = cells[idx]
-            value = values[idx]
+            value = sparse_vector[idx]  # Use original value instead of Tex object
             
             # Create an arrow pointing to the value in the sparse vector
-            annotation = Text(
-                f"Frequency of '{keyword}' = {value.text}",
+            annotation = Tex(
+                f"Frequency of '{keyword}' = {value}",
                 font_size=14,
                 color=YELLOW
             )
@@ -324,7 +328,9 @@ class VectorComparison(Scene):
     def highlight_dense_values(self, dense_visual):
         """Animate highlighting all values in the dense vector."""
         cells = dense_visual[0]
-        values = dense_visual[1]
+        
+        # Get the original dense vector values
+        dense_vector = [0.1, -0.3, 0.7, 0.2, 0.5, -0.1, 0.4, 0.6, -0.2, 0.3]
         
         # Highlight groups of cells to show patterns
         groups = [
@@ -335,7 +341,7 @@ class VectorComparison(Scene):
         
         for group in groups:
             self.play(*[
-                Flash(cells[i], color=BLUE if float(values[i].text) < 0 else GREEN, flash_radius=0.3)
+                Flash(cells[i], color=BLUE if dense_vector[i] < 0 else GREEN, flash_radius=0.3)
                 for i in group
             ], run_time=0.7)
     
@@ -348,8 +354,8 @@ class VectorComparison(Scene):
         ).scale(0.7)
         
         # Add labels
-        x_label = Text("Dimension 1", font_size=16).next_to(axes.x_axis, DOWN)
-        y_label = Text("Dimension 2", font_size=16).next_to(axes.y_axis, LEFT)
+        x_label = Tex(r"\text{Dimension 1}", font_size=16).next_to(axes.x_axis, DOWN)
+        y_label = Tex(r"\text{Dimension 2}", font_size=16).next_to(axes.y_axis, LEFT)
         
         # Create sparse vector points (only along axes)
         sparse_docs = VGroup(*[
@@ -370,7 +376,7 @@ class VectorComparison(Scene):
         ])
         
         # Labels
-        sparse_label = Text("Sparse", color=RED, font_size=16).next_to(sparse_docs, RIGHT)
-        dense_label = Text("Dense", color=BLUE, font_size=16).next_to(dense_docs, LEFT)
+        sparse_label = Tex(r"\text{Sparse}", color=RED, font_size=16).next_to(sparse_docs, RIGHT)
+        dense_label = Tex(r"\text{Dense}", color=BLUE, font_size=16).next_to(dense_docs, LEFT)
         
         return VGroup(axes, x_label, y_label, sparse_docs, dense_docs, sparse_label, dense_label)

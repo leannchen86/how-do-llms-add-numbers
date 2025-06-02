@@ -4,7 +4,7 @@ import numpy as np
 class CLTAnimation(Scene):
     def construct(self):
         # Title
-        title = Text("Cross-Layer Transcoder (CLT)", font_size=48, color=BLUE)
+        title = Tex(r"\text{Cross-Layer Transcoder (CLT)}", font_size=48, color=BLUE)
         title.to_edge(UP)
         self.play(Write(title))
         self.wait(1)
@@ -27,9 +27,9 @@ class CLTAnimation(Scene):
         self.decoder_box.shift(RIGHT * 4)
         
         # Labels
-        encoder_label = Text("Encoder\n(dense)", font_size=20, color=WHITE)
-        sparse_label = Text("Sparse\nActivation", font_size=20, color=WHITE)
-        decoder_label = Text("Decoder\n(dense)", font_size=20, color=WHITE)
+        encoder_label = Tex(r"\text{Encoder}\\\text{(dense)}", font_size=20, color=WHITE)
+        sparse_label = Tex(r"\text{Sparse}\\\text{Activation}", font_size=20, color=WHITE)
+        decoder_label = Tex(r"\text{Decoder}\\\text{(dense)}", font_size=20, color=WHITE)
         
         encoder_label.move_to(self.encoder_box.get_center())
         sparse_label.move_to(self.sparse_box.get_center())
@@ -40,12 +40,12 @@ class CLTAnimation(Scene):
         w_d_label = MathTex("W_d", font_size=24, color=BLUE).next_to(self.decoder_box, DOWN)
         
         # Dimension labels
-        input_dim = Text("768-D\nembeddings", font_size=14, color=GRAY).next_to(self.encoder_box, LEFT)
-        sparse_dim = Text("16,384 features\n(~5 active)", font_size=14, color=GRAY).next_to(self.sparse_box, DOWN, buff=0.5)
-        output_dim = Text("768-D\nembeddings", font_size=14, color=GRAY).next_to(self.decoder_box, RIGHT)
+        input_dim = Tex(r"\text{768-D}\\\text{embeddings}", font_size=14, color=GRAY).next_to(self.encoder_box, LEFT)
+        sparse_dim = Tex(r"\text{16,384 features}\\\text{(\textasciitilde5 active)}", font_size=14, color=GRAY).next_to(self.sparse_box, DOWN, buff=0.5)
+        output_dim = Tex(r"\text{768-D}\\\text{embeddings}", font_size=14, color=GRAY).next_to(self.decoder_box, RIGHT)
         
         # ReLU + L1 loss label
-        loss_label = Text("ReLU + L1 loss", font_size=14, color=RED).next_to(self.sparse_box, UP)
+        loss_label = Tex(r"\text{ReLU + L1 loss}", font_size=14, color=RED).next_to(self.sparse_box, UP)
         
         # Arrows
         arrow1 = Arrow(self.encoder_box.get_right(), self.sparse_box.get_left(), color=WHITE)
@@ -86,13 +86,13 @@ class CLTAnimation(Scene):
         input_values = VGroup()
         sample_values = [0.23, -0.15, 0.87, -0.42, 0.61, -0.33, 0.19, 0.74]
         for i, val in enumerate(sample_values):
-            val_text = Text(f"{val:.2f}", font_size=10, color=YELLOW)
+            val_text = Tex(f"{val:.2f}", font_size=10, color=YELLOW)
             val_text.shift(LEFT * 6 + UP * (i-3.5) * 0.3)
             input_values.add(val_text)
         
-        input_bracket = Text("[", font_size=40, color=YELLOW).next_to(input_values, LEFT)
-        input_bracket2 = Text("]", font_size=40, color=YELLOW).next_to(input_values, RIGHT)
-        input_ellipsis = Text("...", font_size=12, color=YELLOW).next_to(input_values, DOWN)
+        input_bracket = Tex("[", font_size=40, color=YELLOW).next_to(input_values, LEFT)
+        input_bracket2 = Tex("]", font_size=40, color=YELLOW).next_to(input_values, RIGHT)
+        input_ellipsis = MathTex(r"\ldots", font_size=12, color=YELLOW).next_to(input_values, DOWN)
         
         input_vector = VGroup(input_values, input_bracket, input_bracket2, input_ellipsis)
         
@@ -108,12 +108,12 @@ class CLTAnimation(Scene):
         active_features = [(1247, 0.82), (5832, 0.67), (12156, 0.91), (3891, 0.45), (8445, 0.73)]
         
         for i, (feature_id, activation) in enumerate(active_features):
-            feature_text = Text(f"F{feature_id}: {activation:.2f}", font_size=9, color=ORANGE)
+            feature_text = Tex(rf"F{feature_id}: {activation:.2f}", font_size=9, color=ORANGE)
             feature_text.shift(UP * (i-2) * 0.4)
             sparse_features.add(feature_text)
         
         # Add inactive features representation
-        inactive_text = Text("15,979 features: 0.00", font_size=8, color=GRAY, fill_opacity=0.5)
+        inactive_text = Tex(r"\text{15,979 features: 0.00}", font_size=8, color=GRAY, fill_opacity=0.5)
         inactive_text.shift(DOWN * 1.5)
         
         sparse_group = VGroup(sparse_features, inactive_text)
@@ -128,13 +128,13 @@ class CLTAnimation(Scene):
         output_values = VGroup()
         output_sample = [0.21, -0.18, 0.89, -0.39, 0.58, -0.31, 0.22, 0.71]
         for i, val in enumerate(output_sample):
-            val_text = Text(f"{val:.2f}", font_size=10, color=BLUE)
+            val_text = Tex(f"{val:.2f}", font_size=10, color=BLUE)
             val_text.shift(RIGHT * 6 + UP * (i-3.5) * 0.3)
             output_values.add(val_text)
         
-        output_bracket = Text("[", font_size=40, color=BLUE).next_to(output_values, LEFT)
-        output_bracket2 = Text("]", font_size=40, color=BLUE).next_to(output_values, RIGHT)
-        output_ellipsis = Text("...", font_size=12, color=BLUE).next_to(output_values, DOWN)
+        output_bracket = Tex("[", font_size=40, color=BLUE).next_to(output_values, LEFT)
+        output_bracket2 = Tex("]", font_size=40, color=BLUE).next_to(output_values, RIGHT)
+        output_ellipsis = MathTex(r"\ldots", font_size=12, color=BLUE).next_to(output_values, DOWN)
         
         output_vector = VGroup(output_values, output_bracket, output_bracket2, output_ellipsis)
         
@@ -153,23 +153,23 @@ class CLTAnimation(Scene):
         self.play(self.components.animate.shift(UP * 1.5))
         
         # Create comparison
-        comparison_title = Text("Dense Embeddings → Sparse Features → Dense Embeddings", font_size=20, color=WHITE)
+        comparison_title = MathTex(r"\text{Dense Embeddings} \rightarrow \text{Sparse Features} \rightarrow \text{Dense Embeddings}", font_size=20, color=WHITE)
         comparison_title.shift(DOWN * 1.8)
         
         # Traditional MLP: dense in, dense out
-        mlp_label = Text("Traditional MLP", font_size=14, color=RED)
+        mlp_label = Tex(r"\text{Traditional MLP}", font_size=14, color=RED)
         mlp_label.shift(LEFT * 3 + DOWN * 2.8)
         
         # Show dense vector with many non-zero values
         mlp_vector = VGroup()
         mlp_values = [0.23, -0.15, 0.87, -0.42, 0.61, -0.33]
         for i, val in enumerate(mlp_values):
-            val_text = Text(f"{val:.1f}", font_size=8, color=RED)
+            val_text = Tex(f"{val:.1f}", font_size=8, color=RED)
             val_text.shift(LEFT * 3 + DOWN * 3.4 + RIGHT * (i-2.5) * 0.3)
             mlp_vector.add(val_text)
         
         # CLT: sparse feature activations
-        clt_label = Text("CLT Features", font_size=14, color=GREEN)
+        clt_label = Tex(r"\text{CLT Features}", font_size=14, color=GREEN)
         clt_label.shift(RIGHT * 3 + DOWN * 2.8)
         
         # Show sparse activations with feature IDs
@@ -178,7 +178,7 @@ class CLTAnimation(Scene):
         for i, (feature_id, val) in enumerate(sparse_features):
             color = ORANGE if val > 0 else GRAY
             opacity = 1.0 if val > 0 else 0.3
-            val_text = Text(f"{val:.1f}", font_size=8, color=color, fill_opacity=opacity)
+            val_text = Tex(f"{val:.1f}", font_size=8, color=color, fill_opacity=opacity)
             val_text.shift(RIGHT * 3 + DOWN * 3.4 + RIGHT * (i-2.5) * 0.3)
             clt_features.add(val_text)
         
@@ -202,16 +202,16 @@ class CLTAnimation(Scene):
         
     def show_interpretability(self):
         # Show specific feature detection
-        feature_title = Text("Interpretable Features", font_size=22, color=PURPLE)
+        feature_title = Tex(r"\text{Interpretable Features}", font_size=22, color=PURPLE)
         feature_title.shift(DOWN * 2)
         
         # Examples of what sparse features detect
         examples = VGroup(
-            Text("F1247: Math expressions", font_size=12, color=YELLOW),
-            Text("F5832: City names", font_size=12, color=YELLOW),
-            Text("F12156: Animals", font_size=12, color=YELLOW),
-            Text("F3891: Emotions", font_size=12, color=YELLOW),
-            Text("F8445: Code syntax", font_size=12, color=YELLOW)
+            Tex(r"\text{F1247: Math expressions}", font_size=12, color=YELLOW),
+            Tex(r"\text{F5832: City names}", font_size=12, color=YELLOW),
+            Tex(r"\text{F12156: Animals}", font_size=12, color=YELLOW),
+            Tex(r"\text{F3891: Emotions}", font_size=12, color=YELLOW),
+            Tex(r"\text{F8445: Code syntax}", font_size=12, color=YELLOW)
         )
         
         examples.arrange(DOWN, buff=0.2)
@@ -235,34 +235,34 @@ class CLTAnimation(Scene):
 class SimpleCLTDemo(Scene):
     def construct(self):
         # Title
-        title = Text("Cross-Layer Transcoder Architecture", font_size=36)
+        title = Tex(r"\text{Cross-Layer Transcoder Architecture}", font_size=36)
         title.to_edge(UP)
         
         # Create the flow diagram
         # Input
         input_rect = Rectangle(width=1.5, height=3, color=BLUE, fill_opacity=0.3)
-        input_label = Text("Input\n768-D", font_size=16).move_to(input_rect)
+        input_label = Tex(r"\text{Input}\\\text{768-D}", font_size=16).move_to(input_rect)
         input_group = VGroup(input_rect, input_label).shift(LEFT * 5)
         
         # Encoder
         encoder_rect = Rectangle(width=2, height=2, color=GREEN, fill_opacity=0.3)
-        encoder_label = Text("Encoder\nW_e", font_size=16).move_to(encoder_rect)
+        encoder_label = MathTex(r"\text{Encoder}\\W_e", font_size=16).move_to(encoder_rect)
         encoder_group = VGroup(encoder_rect, encoder_label).shift(LEFT * 2)
         
         # Sparse layer
         sparse_rect = Rectangle(width=2, height=1.5, color=ORANGE, fill_opacity=0.3)
-        sparse_label = Text("Sparse\nk-D", font_size=16).move_to(sparse_rect)
-        relu_label = Text("ReLU + L1", font_size=12, color=RED).next_to(sparse_rect, UP)
+        sparse_label = MathTex(r"\text{Sparse}\\k\text{-D}", font_size=16).move_to(sparse_rect)
+        relu_label = Tex(r"\text{ReLU + L1}", font_size=12, color=RED).next_to(sparse_rect, UP)
         sparse_group = VGroup(sparse_rect, sparse_label).shift(ORIGIN)
         
         # Decoder
         decoder_rect = Rectangle(width=2, height=2, color=BLUE, fill_opacity=0.3)
-        decoder_label = Text("Decoder\nW_d", font_size=16).move_to(decoder_rect)
+        decoder_label = MathTex(r"\text{Decoder}\\W_d", font_size=16).move_to(decoder_rect)
         decoder_group = VGroup(decoder_rect, decoder_label).shift(RIGHT * 2)
         
         # Output
         output_rect = Rectangle(width=1.5, height=3, color=BLUE, fill_opacity=0.3)
-        output_label = Text("Output\n768-D", font_size=16).move_to(output_rect)
+        output_label = Tex(r"\text{Output}\\\text{768-D}", font_size=16).move_to(output_rect)
         output_group = VGroup(output_rect, output_label).shift(RIGHT * 5)
         
         # Arrows
@@ -286,7 +286,7 @@ class SimpleCLTDemo(Scene):
         self.wait(2)
         
         # Show the key insight
-        insight = Text("Key: Sparse features are more interpretable", 
+        insight = Tex(r"\text{Key: Sparse features are more interpretable}", 
                       font_size=20, color=YELLOW)
         insight.shift(DOWN * 3)
         

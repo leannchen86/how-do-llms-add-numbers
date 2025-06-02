@@ -17,14 +17,14 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
     def tokenization(self):
         # Smoother title animation
-        explanation = Text("Tokenization", font_size=42, color=WHITE)
+        explanation = Tex(r"\text{Tokenization}", font_size=42, color=WHITE)
         explanation.to_edge(UP, buff=1)
         
         self.play(Write(explanation), run_time=1.5)
         self.wait(0.8)
         
         # Original text with better positioning
-        original_text = Text("'26 + 55 ='", font_size=44, color=GRAY_A)
+        original_text = Tex(r"\text{'26 + 55 ='}", font_size=44, color=GRAY_A)
         original_text.move_to(UP * 1.5)
         self.play(FadeOut(explanation))
         
@@ -40,10 +40,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
         # Enhanced tokenization with better spacing
         tokens = [
-            Text("'26'", font_size=45, color=self.token_colors[0]),
-            Text("'+'", font_size=45, color=self.token_colors[1]),
-            Text("'55'", font_size=45, color=self.token_colors[2]),
-            Text("'='", font_size=45, color=self.token_colors[3])
+            Tex(r"\text{'26'}", font_size=45, color=self.token_colors[0]),
+            Tex(r"\text{'+'}", font_size=45, color=self.token_colors[1]),
+            Tex(r"\text{'55'}", font_size=45, color=self.token_colors[2]),
+            Tex(r"\text{'='}", font_size=45, color=self.token_colors[3])
         ]
         
         # Better positioning with dynamic spacing
@@ -73,10 +73,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
         # Enhanced token IDs with glowing effect
         token_ids = [
-            Text("ID: 253", font_size=18, color=YELLOW_C),
-            Text("ID: 16", font_size=18, color=YELLOW_C),
-            Text("ID: 361", font_size=18, color=YELLOW_C),
-            Text("ID: 54", font_size=18, color=YELLOW_C)
+            Tex(r"\text{ID: 253}", font_size=18, color=YELLOW_C),
+            Tex(r"\text{ID: 16}", font_size=18, color=YELLOW_C),
+            Tex(r"\text{ID: 361}", font_size=18, color=YELLOW_C),
+            Tex(r"\text{ID: 54}", font_size=18, color=YELLOW_C)
         ]
         
         # Position IDs with better spacing
@@ -109,7 +109,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
     def embedding_vectors(self, token_elements, token_ids):
         # Enhanced title
-        explanation = Text("Embedding Vectors", font_size=42, color=WHITE)
+        explanation = Tex(r"\text{Embedding Vectors}", font_size=42, color=WHITE)
         explanation.to_edge(UP, buff=0.5)
         
         self.play(Write(explanation), run_time=1.5)
@@ -129,7 +129,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             # Create the vector components first
             vector_components = VGroup()
             for j, val in enumerate(vector_values):
-                val_text = Text(f"{val:.2f}", font_size=16, color=GRAY_A)
+                val_text = Tex(f"{val:.2f}", font_size=16, color=GRAY_A)
                 if j == 0:
                     val_text.move_to(ORIGIN)
                 else:
@@ -137,18 +137,18 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
                 vector_components.add(val_text)
 
             # Add ellipsis
-            ellipsis = Text("⋮", font_size=20, color=GRAY_B)
+            ellipsis = Tex(r"\vdots", font_size=20, color=GRAY_B)
             ellipsis.next_to(vector_components[-1], DOWN, buff=0.2)
             vector_components.add(ellipsis)
 
             # Add final component
-            final_val = Text(f"{round(np.random.uniform(-1, 1), 2):.2f}", font_size=16, color=GRAY_A)
+            final_val = Tex(f"{round(np.random.uniform(-1, 1), 2):.2f}", font_size=16, color=GRAY_A)
             final_val.next_to(ellipsis, DOWN, buff=0.2)
             vector_components.add(final_val)
 
             # Add brackets on top and bottom (no rotation)
-            open_bracket = Text("[", font_size=32, color=WHITE).rotate(-PI/2)
-            close_bracket = Text("]", font_size=32, color=WHITE).rotate(-PI/2)
+            open_bracket = Tex("[", font_size=32, color=WHITE).rotate(-PI/2)
+            close_bracket = Tex("]", font_size=32, color=WHITE).rotate(-PI/2)
 
             # Position brackets above and below the vector components
             open_bracket.next_to(vector_components, UP, buff=0.1)
@@ -167,8 +167,8 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             embeddings.append(vector_group)
         
         # Create dimension label and brace (only once, on the left)
-        dim_label = Text("768-dim", font_size=38, color=GRAY_C, slant=ITALIC)
-        brace = Text("{", font_size=150, color=GRAY_C)
+        dim_label = Tex(r"\text{768-dim}", font_size=38, color=GRAY_C)
+        brace = Tex(r"\{", font_size=150, color=GRAY_C)
         
         # Position the brace and label to the left of all embeddings
         all_embeddings_group = VGroup(*embeddings)
@@ -224,7 +224,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
     def latent_space(self, individual_embeddings, arrows, token_elements):
         # Enhanced title
-        explanation = Text("Tokens in high-dimensional space", font_size=42, color=WHITE)
+        explanation = Tex(r"\text{Tokens in high-dimensional space}", font_size=42, color=WHITE)
         explanation.to_edge(UP, buff=1)
         
         # Enhanced 3D axes - create off-screen to the right
@@ -260,10 +260,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
         # Enhanced token positioning with clustering - positions relative to axes center
         token_vectors = [
-            (axes.c2p(2.2, 1.5, 2.8), "'26'", self.token_colors[0]),
-            (axes.c2p(-2.8, -1.8, 0.5), "'+'", self.token_colors[1]),
-            (axes.c2p(2.5, 1.2, 3.1), "'55'", self.token_colors[2]),
-            (axes.c2p(-2.5, -2.1, 0.8), "'='", self.token_colors[3])
+            (axes.c2p(2.2, 1.5, 2.8), r"\text{'26'}", self.token_colors[0]),
+            (axes.c2p(-2.8, -1.8, 0.5), r"\text{'+'}", self.token_colors[1]),
+            (axes.c2p(2.5, 1.2, 3.1), r"\text{'55'}", self.token_colors[2]),
+            (axes.c2p(-2.5, -2.1, 0.8), r"\text{'='}", self.token_colors[3])
         ]
         
         dots = []
@@ -277,7 +277,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             dots.append(dot)
             
             # Create enhanced label
-            label = Text(text_content, font_size=20, color=color, weight=BOLD)
+            label = Tex(text_content, font_size=20, color=color)
             label.scale(0.6)
             label.move_to(pos + OUT * 0.3 + UP * 0.3)
             self.add_fixed_orientation_mobjects(label)
@@ -313,25 +313,25 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         # Define additional tokens with their positions and colors
         additional_tokens = [
             # Numbers cluster (near our number tokens)
-            (axes.c2p(1.8, 2.1, 2.3), "'7'", BLUE_A),
-            (axes.c2p(2.7, 0.9, 3.5), "'100'", BLUE_A),
-            (axes.c2p(1.5, 1.8, 2.1), "'42'", BLUE_A),
+            (axes.c2p(1.8, 2.1, 2.3), r"\text{'7'}", BLUE_A),
+            (axes.c2p(2.7, 0.9, 3.5), r"\text{'100'}", BLUE_A),
+            (axes.c2p(1.5, 1.8, 2.1), r"\text{'42'}", BLUE_A),
             
             # Mathematical operators cluster (near + and =)
-            (axes.c2p(-2.2, -1.5, 1.1), "'-'", GREEN_C),
-            (axes.c2p(-3.1, -2.4, 0.2), "'*'", GREEN_C),
-            (axes.c2p(-2.0, -2.8, 0.9), "'/'", GREEN_C),
+            (axes.c2p(-2.2, -1.5, 1.1), r"\text{'-'}", GREEN_C),
+            (axes.c2p(-3.1, -2.4, 0.2), r"\text{'*'}", GREEN_C),
+            (axes.c2p(-2.0, -2.8, 0.9), r"\text{'/'}", GREEN_C),
             
             # Common words (distributed in other areas)
-            (axes.c2p(-1.2, 3.2, -2.1), "'the'", PURPLE_C),
-            (axes.c2p(0.5, -3.1, -1.8), "'and'", PURPLE_C),
-            (axes.c2p(3.2, -0.8, -2.5), "'is'", PURPLE_C),
-            (axes.c2p(-3.5, 1.2, -1.2), "'of'", PURPLE_C),
+            (axes.c2p(-1.2, 3.2, -2.1), r"\text{'the'}", PURPLE_C),
+            (axes.c2p(0.5, -3.1, -1.8), r"\text{'and'}", PURPLE_C),
+            (axes.c2p(3.2, -0.8, -2.5), r"\text{'is'}", PURPLE_C),
+            (axes.c2p(-3.5, 1.2, -1.2), r"\text{'of'}", PURPLE_C),
             
             # Punctuation scattered
-            (axes.c2p(0.8, 2.8, -3.2), "'.'", ORANGE),
-            (axes.c2p(-0.5, -2.2, -2.8), "','", ORANGE),
-            (axes.c2p(2.1, -2.5, -1.5), "'?'", ORANGE),
+            (axes.c2p(0.8, 2.8, -3.2), r"\text{'.'}", ORANGE),
+            (axes.c2p(-0.5, -2.2, -2.8), r"\text{','}", ORANGE),
+            (axes.c2p(2.1, -2.5, -1.5), r"\text{'?'}", ORANGE),
         ]
         
         # Create dots and labels for additional tokens
@@ -346,7 +346,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             additional_dots.append(dot)
             
             # Create labels
-            label = Text(text_content, font_size=20, color=color)
+            label = Tex(text_content, font_size=20, color=color)
             label.scale(0.5)
             label.move_to(pos + OUT * 0.2 + UP * 0.2)
             self.add_fixed_orientation_mobjects(label)
@@ -361,7 +361,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         )
         self.wait(0.5)
         
-        # Then operators
+        # Operators second
         self.play(
             *[FadeIn(additional_dots[i], scale=0.5) for i in range(3, 6)],
             *[FadeIn(additional_labels[i], scale=0.5) for i in range(3, 6)],
@@ -369,7 +369,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         )
         self.wait(0.5)
         
-        # Then common words
+        # Words third
         self.play(
             *[FadeIn(additional_dots[i], scale=0.5) for i in range(6, 10)],
             *[FadeIn(additional_labels[i], scale=0.5) for i in range(6, 10)],
@@ -377,16 +377,19 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         )
         self.wait(0.5)
         
-        # Finally punctuation
+        # Punctuation last
         self.play(
             *[FadeIn(additional_dots[i], scale=0.5) for i in range(10, 13)],
             *[FadeIn(additional_labels[i], scale=0.5) for i in range(10, 13)],
             run_time=1.5
         )
         
-        self.wait(2)
-        
+        # Final camera movement for a nice overview
         self.move_camera(
-            theta=-135 * DEGREES,
+            phi=60 * DEGREES,
+            theta=-30 * DEGREES,
+            zoom=0.7,
             run_time=3
         )
+        
+        self.wait(3)
