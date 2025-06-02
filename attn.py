@@ -41,8 +41,8 @@ class SelfAttentionAnimation(Scene):
         
         # Create highlighted Q·K^T with MathTex
         highlighted_qkt = MathTex(r"Q \cdot K^T", font_size=36, color=YELLOW)
-        # Position it approximately where it appears in the formula, moved lower
-        highlighted_qkt.move_to(formula_text.get_center() + LEFT * 0.5 + DOWN * 0.8)
+        # Position it horizontally centered with the formula, moved lower
+        highlighted_qkt.move_to(formula_text.get_center() + DOWN * 0.8)
         
         # Show the complete formula first
         self.play(Write(formula_text))
@@ -184,7 +184,7 @@ class SelfAttentionAnimation(Scene):
         ]
         
         # Position down and to the left where the Q matrix will be
-        start_pos = LEFT * 4 + DOWN * 0.3
+        start_pos = LEFT * 3.2 + DOWN * 0.3
         
         for i, (label, values) in enumerate(zip(token_labels, q_values)):
             # Create horizontal row vector with brackets, using Tex for numbers
@@ -243,7 +243,8 @@ class SelfAttentionAnimation(Scene):
             brackets.scale([0.5, 1.0, 1])  # Scale: [x_scale, y_scale, z_scale] - narrower but taller
             
             # Position each column vector horizontally side by side (like matrix columns)
-            vector_matrix.move_to(start_pos + RIGHT * i * 1.2)
+            # Reduced spacing from 1.2 to 0.9 to bring numbers closer together
+            vector_matrix.move_to(start_pos + RIGHT * i * 0.9)
             
             # Add subscript label below
             label_text = MathTex(r"K^T_{" + label + r"}", font_size=20, color=RED)
@@ -501,22 +502,14 @@ class SelfAttentionAnimation(Scene):
         kt_bottom = self.kt_matrix.get_bottom()[1]
         
         # Position attention matrix: 
-        # - Vertically aligned with Q matrix (same top and bottom)
-        # - Horizontally aligned with K^T matrix (same left and right)
-        # - With some spacing from the existing matrices
+        # - Vertically same size as Q matrix (use Q's top and bottom exactly)
+        # - Horizontally same distance apart as K^T brackets (use K^T's left and right exactly)
         
-        # Calculate attention matrix bounds
+        # Calculate attention matrix bounds - use exact dimensions
         att_left = kt_left  # Same left as K^T
         att_right = kt_right  # Same right as K^T
         att_top = q_top    # Same top as Q
         att_bottom = q_bottom  # Same bottom as Q
-        
-        # Add some padding
-        padding = 0.5
-        att_left -= padding
-        att_right += padding
-        att_top += padding * 0.5
-        att_bottom -= padding * 0.5
         
         # Create custom attention matrix brackets with Line objects (same style as Q and K^T)
         bracket_width = 0.3
