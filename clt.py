@@ -14,7 +14,7 @@ class MLPvsCLTComparison(Scene):
         mlp_model.shift(LEFT * 12)  # Start off-screen to the left
         
         # Create MLP title positioned off-screen to the left
-        mlp_title = Text("MLP (Polysemantic)", font_size=28, color=MLP_COLOR)
+        mlp_title = Tex(r"\text{MLP (Polysemantic)}", font_size=38, color=MLP_COLOR)
         mlp_title.move_to([-15.5, 2.5, 0])  # Off-screen to the left
         
         # Add models to scene (but they're off-screen)
@@ -29,7 +29,7 @@ class MLPvsCLTComparison(Scene):
         )
         
         # Now add the neuron label and arrow pointing to a neuron
-        neuron_label = Text("Neuron", font_size=22, color=MLP_COLOR).move_to([3,2.5, 0])
+        neuron_label = Tex(r"\text{Neuron}", font_size=32, color=MLP_COLOR).move_to([3,2.5, 0])
         neuron_label.set_stroke(BLACK, width=3, opacity=0.8, background=True)
 
         # Show the label with highlight effects
@@ -56,7 +56,7 @@ class MLPvsCLTComparison(Scene):
         self.play(
             FadeOut(neuron_arrow),
             FadeOut(neuron_label)
-            )
+        )
         
         # Demonstrate polysemantic neurons with enhanced visual effects
         self.demonstrate_polysemantic_neurons(mlp_model, ACTIVE_MLP_COLOR, MLP_COLOR)
@@ -65,11 +65,11 @@ class MLPvsCLTComparison(Scene):
         clt_model, clt_inputs, clt_output = self.create_clt_model(CLT_COLOR)
         clt_model.shift(RIGHT * 12)  # Start off-screen to the right
         
-        clt_title = Text("CLT (Monosemantic)", font_size=28, color=CLT_COLOR)
+        clt_title = Tex(r"\text{CLT (Monosemantic)}", font_size=38, color=CLT_COLOR)
         clt_title.move_to([15.5, 2.5, 0])  # Off-screen to the right
         
         # Position feature label closer to target feature
-        feature_label = Text("Feature", font_size=22, color=CLT_COLOR).move_to([30, 3.5, 0])
+        feature_label = Tex(r"\text{Feature}", font_size=32, color=CLT_COLOR).move_to([30, 3.5, 0])
         feature_label.set_stroke(BLACK, width=3, opacity=0.8, background=True)
         
         # Add CLT components to scene (off-screen)
@@ -157,12 +157,12 @@ class MLPvsCLTComparison(Scene):
         
         # Input/output labels (empty initially)
         inputs = [
-            Text("", font_size=20).next_to(network[0][0], LEFT),
-            Text("", font_size=20).next_to(network[0][1], LEFT),
-            Text("", font_size=20).next_to(network[0][2], LEFT)
+            Tex("", font_size=30).next_to(network[0][0], LEFT),
+            Tex("", font_size=30).next_to(network[0][1], LEFT),
+            Tex("", font_size=30).next_to(network[0][2], LEFT)
         ]
         
-        output = Text("", font_size=24, color=GREEN).next_to(network[3][0], RIGHT)
+        output = Tex("", font_size=34, color=GREEN).next_to(network[3][0], RIGHT)
         
         return VGroup(network, connections), inputs, output
     
@@ -195,42 +195,42 @@ class MLPvsCLTComparison(Scene):
         connection_map = [
             # Layer 0 to Layer 1: Input tokens to feature extraction
             # "26" (input 0) -> magnitude and digit features
-            (0, 0, 1, 0),  # 26 -> ≈20 (magnitude)
+            (0, 0, 1, 0),  # 26 -> \approx 20 (magnitude)
             (0, 0, 1, 2),  # 26 -> ends in 6 (units digit)
             
             # "55" (input 2) -> magnitude and digit features  
-            (0, 2, 1, 1),  # 55 -> ≈50 (magnitude)
+            (0, 2, 1, 1),  # 55 -> \approx 50 (magnitude)
             (0, 2, 1, 3),  # 55 -> ends in 5 (units digit)
             
             # Layer 1 to Layer 2: Feature combination for arithmetic
-            # Magnitude estimation: ≈20 + ≈50 = ≈70
-            (1, 0, 2, 0),  # ≈20 -> magnitude sum ≈70
-            (1, 1, 2, 0),  # ≈50 -> magnitude sum ≈70
+            # Magnitude estimation: \approx 20 + \approx 50 = \approx 70
+            (1, 0, 2, 0),  # \approx 20 -> magnitude sum (\approx 70)
+            (1, 1, 2, 0),  # \approx 50 -> magnitude sum (\approx 70)
             
-            # Units digit addition: 6 + 5 = 11 (carry 1, units 1)
+            # Units digit addition: 6 + 5 \rightarrow 11 (carry 1, units 1)
             (1, 2, 2, 1),  # ends in 6 -> 6+5=11, units=1, carry=1
             (1, 3, 2, 1),  # ends in 5 -> 6+5=11, units=1, carry=1
             
             # Tens digit computation: 2 + 5 + carry = 8
-            (1, 0, 2, 2),  # From ≈20, extract tens digit 2
-            (1, 1, 2, 2),  # From ≈50, extract tens digit 5
+            (1, 0, 2, 2),  # From \approx 20, extract tens digit 2
+            (1, 1, 2, 2),  # From \approx 50, extract tens digit 5
             (2, 1, 2, 2),  # Carry from units addition
             
             # Layer 2 to Layer 3: Final computation and validation
-            # Final magnitude check: ≈70 -> ≈80 (with carry)
-            (2, 0, 3, 0),  # ≈70 -> final magnitude ≈80
+            # Final magnitude check: \approx 70 \rightarrow \approx 80 (with carry)
+            (2, 0, 3, 0),  # \approx 70 -> final magnitude (\approx 80)
             
-            # Units digit confirmation: units calculation result
-            (2, 1, 3, 1),  # units calculation -> value ≡ 1 (mod 10)
+            # Units digit confirmation: value \equiv 1 \pmod{10}
+            (2, 1, 3, 1),  # units calculation -> value \equiv 1 \pmod{10}
             
-            # Tens digit with carry: final two-digit result
-            (2, 2, 3, 2),  # tens + carry -> value ≡ 81 (mod 100)
-            (2, 1, 3, 2),  # units carry -> value ≡ 81 (mod 100)
+            # Tens digit with carry: final two-digit result \equiv 81 \pmod{100}
+            (2, 2, 3, 2),  # tens + carry -> value \equiv 81 \pmod{100}
+            (2, 1, 3, 2),  # units carry -> value \equiv 81 \pmod{100}
             
             # Layer 3 to Layer 4: All features converge to final output
-            (3, 0, 4, 0),  # magnitude ≈80 -> 81
+            (3, 0, 4, 0),  # magnitude (\approx 80) -> 81
             (3, 1, 4, 0),  # units digit 1 -> 81  
-            (3, 2, 4, 0),  # value ≡ 81 (mod 100) -> 81
+            (3, 2, 4, 0),  # value \equiv 81 \pmod{100} -> 81
         ]
         
         # Add meaningful connections
@@ -246,8 +246,6 @@ class MLPvsCLTComparison(Scene):
         
         # Add random additional connections to make the network look more web-like
         np.random.seed(42)  # For reproducible random connections
-        additional_connections = []
-        
         for layer_idx in range(layers - 1):
             current_layer_size = nodes_per_layer[layer_idx]
             next_layer_size = nodes_per_layer[layer_idx + 1]
@@ -255,29 +253,26 @@ class MLPvsCLTComparison(Scene):
             # Add random connections (especially to nodes without meaningful connections)
             for i in range(current_layer_size):
                 for j in range(next_layer_size):
-                    # Check if this connection already exists in meaningful connections
                     existing = any(
                         l1 == layer_idx and n1 == i and l2 == layer_idx + 1 and n2 == j
                         for l1, n1, l2, n2 in connection_map
                     )
-                    
-                    # Add random connection with some probability, especially for unused nodes
-                    if not existing and np.random.random() < 0.3:  # 30% chance for random connections
+                    if not existing and np.random.random() < 0.3:
                         connection = Line(
                             network[layer_idx][i].get_center(),
                             network[layer_idx + 1][j].get_center(),
-                            stroke_opacity=0.15,  # Lower opacity for random connections
-                            stroke_width=0.3,     # Thinner for random connections
+                            stroke_opacity=0.15,
+                            stroke_width=0.3,
                             stroke_color=color
                         )
                         connections.add(connection)
         
         # Input/output labels (empty initially)
         inputs = [
-            Text("", font_size=14).next_to(network[0][i], LEFT) for i in range(4)
+            Tex("", font_size=24).next_to(network[0][i], LEFT) for i in range(4)
         ]
         
-        output = Text("", font_size=16).next_to(network[-1][0], RIGHT)
+        output = Tex("", font_size=26).next_to(network[-1][0], RIGHT)
         
         return VGroup(network, connections), inputs, output
 
@@ -299,14 +294,20 @@ class MLPvsCLTComparison(Scene):
         # Process each input sequentially
         for j, (input_text, output_label) in enumerate(zip(inputs, output_labels)):
             # Create input label
-            input_label = Text(input_text, font_size=22, color=WHITE)
-            input_label.next_to(network[0][1], LEFT, buff=0.5)  # Position near middle input
+            if input_text.isnumeric() or input_text in ['+', '-', '=', '*', '/']:
+                input_label = Tex(f"{input_text}", font_size=32, color=WHITE)
+            else:
+                input_label = Tex(rf"\text{{{input_text}}}", font_size=32, color=WHITE)
+            input_label.next_to(network[0][1], LEFT, buff=0.5)
             
             bg = BackgroundRectangle(input_label, color=BLACK, fill_opacity=0.7, buff=0.1)
             current_input_display = VGroup(bg, input_label)
             
             # Create output label (but don't show it yet)
-            output_label_text = Text(output_label, font_size=20, color=GREEN)
+            if output_label.isnumeric() or output_label in ['+', '-', '=', '*', '/']:
+                output_label_text = Tex(f"{output_label}", font_size=30, color=GREEN)
+            else:
+                output_label_text = Tex(rf"\text{{{output_label}}}", font_size=30, color=GREEN)
             output_label_text.next_to(network[-1][0], RIGHT, buff=0.5)
             
             output_bg = BackgroundRectangle(output_label_text, color=BLACK, fill_opacity=0.7, buff=0.1)
@@ -399,7 +400,7 @@ class MLPvsCLTComparison(Scene):
         # Correctly unpack the model components
         network_group, connections = model
         network = network_group
-        
+
         # Define computation steps with correct feature indices
         computation_steps = [
             {
@@ -407,7 +408,7 @@ class MLPvsCLTComparison(Scene):
                 "inputs": ["26", "55"],  # Only numbers first
                 "input_indices": [0, 2],  # tokens "26" and "55"
                 "layer": 1,
-                "features": ["≈20", "≈50", "ends in 6", "ends in 5"],
+                "features": [r"\approx 20", r"\approx 50", r"\text{ends in 6}", r"\text{ends in 5}"],
                 "feature_indices": [0, 1, 2, 3]
             },
             {
@@ -415,7 +416,11 @@ class MLPvsCLTComparison(Scene):
                 "inputs": ["+"],  # Operation token
                 "input_indices": [1],  # token "+"
                 "layer": 2,
-                "features": ["≈70-ish", "6+5→1,carry", "2+5+1→8"],
+                "features": [
+                    r"\approx 70",
+                    r"6 + 5 \rightarrow 1,\,\text{carry}",
+                    r"2 + 5 + 1 \rightarrow 8"
+                ],
                 "feature_indices": [0, 1, 2]  # Arithmetic computation features
             },
             {
@@ -423,66 +428,86 @@ class MLPvsCLTComparison(Scene):
                 "inputs": ["="],  # Computation trigger
                 "input_indices": [3],  # token "="
                 "layer": 3,
-                "features": ["≈80 final", "≡1 (mod 10)", "≡81 (mod 100)"],
+                "features": [
+                    r"\approx 80\,\text{final}",
+                    r"\equiv 1 \pmod{10}",
+                    r"\equiv 81 \pmod{100}"
+                ],
                 "feature_indices": [0, 1, 2]  # Final computation features
             }
         ]
-        
+
         # Create and show all feature labels initially (only for non-empty features)
         all_feature_labels = []
-        
-        # Layer 1 features (only first 4 have labels)
-        layer1_labels = ["≈20", "≈50", "ends in 6", "ends in 5"]
+
+        # Layer 1 features (now wrapped in \text{…} for “ends in …”, font_size bumped to 24)
+        layer1_labels = [
+            r"\approx 20",
+            r"\approx 50",
+            r"\text{ends in 6}",
+            r"\text{ends in 5}"
+        ]
         for i, label in enumerate(layer1_labels):
             feature_node = network[1][i]
-            feature_text = Text(label, font_size=10, color=base_color)
+            feature_text = MathTex(label, font_size=24, color=base_color)
             feature_text.next_to(feature_node, UP, buff=0.15)
             bg = BackgroundRectangle(feature_text, color=BLACK, fill_opacity=0.7, buff=0.03)
             feature_group = VGroup(bg, feature_text)
             all_feature_labels.append(feature_group)
-        
-        # Layer 2 features (only first 3 have labels)
-        layer2_labels = ["≈70-ish", "6+5→1,carry", "2+5+1→8"]
+
+        # Layer 2 features (font_size bumped to  Twenty-two)
+        layer2_labels = [
+            r"\approx 70",
+            r"6 + 5 \rightarrow 1,\,\text{carry}",
+            r"2 + 5 + 1 \rightarrow 8"
+        ]
         for i, label in enumerate(layer2_labels):
             feature_node = network[2][i]
-            feature_text = Text(label, font_size=9, color=base_color)
+            feature_text = MathTex(label, font_size=22, color=base_color)
             feature_text.next_to(feature_node, UP, buff=0.15)
             bg = BackgroundRectangle(feature_text, color=BLACK, fill_opacity=0.7, buff=0.03)
             feature_group = VGroup(bg, feature_text)
             all_feature_labels.append(feature_group)
-        
-        # Layer 3 features (only first 3 have labels)
-        layer3_labels = ["≈80 final", "≡1 (mod 10)", "≡81 (mod 100)"]
+
+        # Layer 3 features (font_size bumped to Twenty)
+        layer3_labels = [
+            r"\approx 80\,\text{final}",
+            r"\equiv 1 \pmod{10}",
+            r"\equiv 81 \pmod{100}"
+        ]
         for i, label in enumerate(layer3_labels):
             feature_node = network[3][i]
-            feature_text = Text(label, font_size=8, color=base_color)
+            feature_text = MathTex(label, font_size=20, color=base_color)
             feature_text.next_to(feature_node, UP, buff=0.15)
             bg = BackgroundRectangle(feature_text, color=BLACK, fill_opacity=0.7, buff=0.03)
             feature_group = VGroup(bg, feature_text)
             all_feature_labels.append(feature_group)
-        
+
         # Show all feature labels
         self.play(
             *[FadeIn(label, scale=0.8) for label in all_feature_labels],
             lag_ratio=0.05,
             run_time=2
         )
-        
+
         self.wait(1)
-        
+
         # Create all input displays upfront and show them all at once
         all_input_displays = {}
         for input_text, input_idx in [("26", 0), ("+", 1), ("55", 2), ("=", 3)]:
             input_node = network[0][input_idx]
-            input_label = Text(input_text, font_size=16, color=WHITE)
+            if input_text.isnumeric() or input_text in ['+', '-', '=', '*', '/']:
+                input_label = Tex(f"{input_text}", font_size=26, color=WHITE)
+            else:
+                input_label = Tex(rf"\text{{{input_text}}}", font_size=26, color=WHITE)
             input_label.next_to(input_node, LEFT, buff=0.2)
             bg = BackgroundRectangle(input_label, color=BLACK, fill_opacity=0.8, buff=0.05)
             input_display = VGroup(bg, input_label)
             all_input_displays[input_idx] = (input_display, input_node, input_idx)
-        
+
         # Show all input tokens at once
         self.play(*[FadeIn(display[0]) for display, _, _ in all_input_displays.values()], run_time=0.8)
-        
+
         # Fire all tokens simultaneously and KEEP them filled throughout
         all_token_animations = []
         for display, input_node, _ in all_input_displays.values():
@@ -490,58 +515,57 @@ class MLPvsCLTComparison(Scene):
                 Flash(input_node, color=active_color, flash_radius=0.25),
                 input_node.animate.set_fill(active_color, opacity=0.8)
             ])
-        
         self.play(*all_token_animations, run_time=0.8)
         self.wait(0.8)
-        
+
         # Keep track of token circles for re-highlighting (create them now but don't show yet)
         token_circles = []
         for display, input_node, _ in all_input_displays.values():
             token_circle = Circle(
-                radius=0.35, 
-                color=active_color, 
+                radius=0.35,
+                color=active_color,
                 stroke_width=3,
                 stroke_opacity=0  # Initially invisible
             ).move_to(input_node.get_center())
             token_circles.append(token_circle)
             self.add(token_circle)  # Add to scene but invisible
         self.wait(0.5)
-        
+
         # Execute computation steps with proper connections
         for step_num, step in enumerate(computation_steps):
             # Re-highlight relevant tokens for this step using circles
             if step["inputs"]:
                 current_input_displays = [all_input_displays[idx] for idx in step["input_indices"]]
-                
+
                 # Show and highlight token circles for this step
                 relevant_circles = [token_circles[idx] for idx in step["input_indices"]]
                 self.play(
                     *[circle.animate.set_stroke(opacity=1.0) for circle in relevant_circles],
                     run_time=0.4
                 )
-                
+
                 # SYNCHRONIZED: Activate corresponding features with connections
                 all_animations = []
-                
+
                 # Add feature activation animations
                 target_layer = step["layer"]
                 for feature_idx in step["feature_indices"]:
                     feature_node = network[target_layer][feature_idx]
-                    
+
                     # Add feature flash and fill animations
                     all_animations.extend([
                         Flash(feature_node, color=active_color, flash_radius=0.25),
                         feature_node.animate.set_fill(active_color, opacity=0.8)
                     ])
-                    
+
                     # Add connection pulses from current step inputs to features
                     for display, input_node, input_idx in current_input_displays:
                         for conn in connections:
-                            if (np.allclose(conn.get_start(), input_node.get_center(), atol=0.1) and 
+                            if (np.allclose(conn.get_start(), input_node.get_center(), atol=0.1) and
                                 np.allclose(conn.get_end(), feature_node.get_center(), atol=0.1)):
                                 pulse = conn.copy().set_stroke(active_color, width=3, opacity=0.9)
                                 all_animations.append(ShowPassingFlash(pulse, time_width=0.6))
-                    
+
                     # For layers beyond 1, also show connections from previously activated features
                     if target_layer > 1:
                         prev_layer = target_layer - 1
@@ -549,51 +573,51 @@ class MLPvsCLTComparison(Scene):
                             # Check if this previous node is still active (filled)
                             if hasattr(prev_node, 'fill_opacity') and prev_node.fill_opacity > 0.5:
                                 for conn in connections:
-                                    if (np.allclose(conn.get_start(), prev_node.get_center(), atol=0.1) and 
+                                    if (np.allclose(conn.get_start(), prev_node.get_center(), atol=0.1) and
                                         np.allclose(conn.get_end(), feature_node.get_center(), atol=0.1)):
                                         pulse = conn.copy().set_stroke(active_color, width=3, opacity=0.9)
                                         all_animations.append(ShowPassingFlash(pulse, time_width=0.6))
-                
+
                 # Play all animations simultaneously
                 self.play(*all_animations, run_time=0.8)
-                
+
                 self.wait(0.6)
-                
+
                 # Gray out token circles again after step (except for last step)
                 if step_num < len(computation_steps) - 1:
                     self.play(
                         *[circle.animate.set_stroke(opacity=0.0) for circle in relevant_circles],
                         run_time=0.4
                     )
-        
+
         # Final output activation
         output_node = network[4][0]
-        output_label = Text("81", font_size=18, color=GREEN)
+        output_label = Tex("81", font_size=28, color=GREEN)
         output_label.next_to(output_node, RIGHT, buff=0.2)
         bg = BackgroundRectangle(output_label, color=BLACK, fill_opacity=0.8, buff=0.05)
         output_display = VGroup(bg, output_label)
-        
+
         # SYNCHRONIZED: Show final connections from layer 3 to output with output activation
         final_animations = [
             FadeIn(output_display),
             Flash(output_node, color=GREEN, flash_radius=0.4),
             output_node.animate.set_fill(GREEN, opacity=0.8)
         ]
-        
+
         # Add connection pulses from layer 3 activated features to output
         for i in range(3):  # Only the 3 features that were activated in layer 3
             feature_node = network[3][i]
             for conn in connections:
-                if (np.allclose(conn.get_start(), feature_node.get_center(), atol=0.1) and 
+                if (np.allclose(conn.get_start(), feature_node.get_center(), atol=0.1) and
                     np.allclose(conn.get_end(), output_node.get_center(), atol=0.1)):
                     pulse = conn.copy().set_stroke(GREEN, width=3, opacity=0.9)
                     final_animations.append(ShowPassingFlash(pulse, time_width=0.8))
-        
+
         # Play all final animations simultaneously
         self.play(*final_animations, run_time=1.0)
-        
+
         self.wait(1.5)
-        
+
         # Clean up - fade out all input displays, token circles, and reset everything
         cleanup_animations = [
             FadeOut(output_display),
@@ -601,7 +625,7 @@ class MLPvsCLTComparison(Scene):
             *[FadeOut(display) for display, _, _ in all_input_displays.values()],
             *[FadeOut(circle) for circle in token_circles],  # Fade out token circles
         ]
-        
+
         self.play(*cleanup_animations, run_time=1.2)
-        
+
         self.wait(1)
