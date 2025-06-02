@@ -8,10 +8,6 @@ class MLPvsCLTComparison(Scene):
         CLT_COLOR = "#87CEEB"  # Light blue
         ACTIVE_MLP_COLOR = "#4682B4"  # Steel blue (darker than light blue for contrast)
         ACTIVE_CLT_COLOR = "#FF6B6B"  # Coral red for better contrast
-        BG_COLOR = "#1a1a1a"  # Darker background
-        
-        # Setup scene
-        self.camera.background_color = BG_COLOR
         
         # Create MLP model positioned off-screen to the left
         mlp_model, mlp_inputs, mlp_output = self.create_mlp_model(MLP_COLOR)
@@ -33,7 +29,7 @@ class MLPvsCLTComparison(Scene):
         )
         
         # Now add the neuron label and arrow pointing to a neuron
-        neuron_label = Text("Neurons", font_size=22, color=MLP_COLOR).move_to([3,2.5, 0])
+        neuron_label = Text("Neuron", font_size=22, color=MLP_COLOR).move_to([3,2.5, 0])
         neuron_label.set_stroke(BLACK, width=3, opacity=0.8, background=True)
 
         # Show the label with highlight effects
@@ -73,7 +69,7 @@ class MLPvsCLTComparison(Scene):
         clt_title.move_to([15.5, 2.5, 0])  # Off-screen to the right
         
         # Position feature label closer to target feature
-        feature_label = Text("Features", font_size=22, color=CLT_COLOR).move_to([30, 3.5, 0])
+        feature_label = Text("Feature", font_size=22, color=CLT_COLOR).move_to([30, 3.5, 0])
         feature_label.set_stroke(BLACK, width=3, opacity=0.8, background=True)
         
         # Add CLT components to scene (off-screen)

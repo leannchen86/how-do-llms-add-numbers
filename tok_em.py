@@ -5,8 +5,6 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
     def construct(self):
         # Enhanced color scheme
         self.token_colors = [BLUE_C, BLUE_C, BLUE_C, BLUE_C]  # Different colors for each token
-        self.bg_color = "#1a1a1a"
-        self.camera.background_color = self.bg_color
         
         # Scene 2: Tokenization Process
         token_elements, token_ids = self.tokenization()
@@ -75,10 +73,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
         # Enhanced token IDs with glowing effect
         token_ids = [
-            Text("ID: 2538", font_size=18, color=YELLOW_C),
+            Text("ID: 253", font_size=18, color=YELLOW_C),
             Text("ID: 16", font_size=18, color=YELLOW_C),
-            Text("ID: 3614", font_size=18, color=YELLOW_C),
-            Text("ID: 545", font_size=18, color=YELLOW_C)
+            Text("ID: 361", font_size=18, color=YELLOW_C),
+            Text("ID: 54", font_size=18, color=YELLOW_C)
         ]
         
         # Position IDs with better spacing
@@ -131,11 +129,11 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             # Create the vector components first
             vector_components = VGroup()
             for j, val in enumerate(vector_values):
-                val_text = Text(f"{val:+.2f}", font_size=16, color=GRAY_A)
+                val_text = Text(f"{val:.2f}", font_size=16, color=GRAY_A)
                 if j == 0:
                     val_text.move_to(ORIGIN)
                 else:
-                    val_text.next_to(vector_components[-1], DOWN, buff=0.1)
+                    val_text.next_to(vector_components[-1], DOWN, buff=0.2)
                 vector_components.add(val_text)
 
             # Add ellipsis
@@ -144,7 +142,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             vector_components.add(ellipsis)
 
             # Add final component
-            final_val = Text(f"{round(np.random.uniform(-1, 1), 2):+.2f}", font_size=16, color=GRAY_A)
+            final_val = Text(f"{round(np.random.uniform(-1, 1), 2):.2f}", font_size=16, color=GRAY_A)
             final_val.next_to(ellipsis, DOWN, buff=0.2)
             vector_components.add(final_val)
 
@@ -162,8 +160,8 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             vector_elements.add(close_bracket)
             
             # Position vectors with increased spacing
-            x_pos = (i - 1.5) * 1.2  # Increased from 0.8 to 1.2 for more space
-            vector_elements.move_to(RIGHT * x_pos + DOWN * 0.5)
+            x_pos = (i - 1.5) * 2.1  # Increased from 0.8 to 1.2 for more space
+            vector_elements.move_to(RIGHT * x_pos + DOWN * 1.2)
             
             vector_group = VGroup(vector_elements)
             embeddings.append(vector_group)
@@ -226,7 +224,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
     def latent_space(self, individual_embeddings, arrows, token_elements):
         # Enhanced title
-        explanation = Text("Tokens in Latent Space", font_size=42, color=WHITE)
+        explanation = Text("Tokens in high-dimensional space", font_size=42, color=WHITE)
         explanation.to_edge(UP, buff=1)
         
         # Enhanced 3D axes - create off-screen to the right
@@ -247,11 +245,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
         # Position axes off-screen to the right
         axes.shift(RIGHT * 20)
-        
-        # Add title
-        self.play(Write(explanation), run_time=1.5)
-        self.play(FadeOut(explanation), run_time=1)
-        
+              
         # Add axes off-screen to the right and slide them in while moving vectors left
         self.add(axes)
         self.play(
@@ -278,9 +272,8 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         # Create target dots and labels
         for i, (pos, text_content, color) in enumerate(token_vectors):
             # Create enhanced dot with glow
-            dot = Sphere(radius=0.12, color=color, resolution=(12, 12))
+            dot = Dot3D(radius = 0.09, color=color)
             dot.move_to(pos)
-            dot.set_gloss(0.8)
             dots.append(dot)
             
             # Create enhanced label
@@ -294,7 +287,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         transform_animations = []
         for i in range(4):
             transform_animations.append(Transform(individual_embeddings[i], dots[i]))
-        
+
+        self.play(Write(explanation), run_time=1.5)
+        self.play(FadeOut(explanation), run_time=1)
+
         # Transform vectors to dots and fade in labels
         self.play(
             *transform_animations,
@@ -344,13 +340,13 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
         for pos, text_content, color in additional_tokens:
             # Create smaller, more subtle dots for additional tokens
-            dot = Sphere(radius=0.08, color=color, resolution=(8, 8))
+            dot = Dot3D(radius=0.09, color=color)
             dot.move_to(pos)
             dot.set_opacity(0.7)
             additional_dots.append(dot)
             
             # Create labels
-            label = Text(text_content, font_size=14, color=color)
+            label = Text(text_content, font_size=20, color=color)
             label.scale(0.5)
             label.move_to(pos + OUT * 0.2 + UP * 0.2)
             self.add_fixed_orientation_mobjects(label)
