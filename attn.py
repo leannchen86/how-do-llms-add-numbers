@@ -30,7 +30,7 @@ class SelfAttentionAnimation(Scene):
         
         # Create the formula using MathTex for proper math rendering
         formula_text = MathTex(
-            r"\mathrm{Attention}(Q,\,K,\,V) \;=\; \mathrm{Softmax}\!\Bigl(\tfrac{Q \cdot K^T}{\sqrt{d_k}}\Bigr)\,V",
+            r"\mathrm{Attention}(Q,\,K,\,V) \;=\; \mathrm{Softmax}\,\Bigl(\tfrac{Q \cdot K^T}{\sqrt{d_k}}\Bigr)\,V",
             font_size=36
         )
         formula_text.move_to(ORIGIN)
