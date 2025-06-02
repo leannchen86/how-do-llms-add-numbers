@@ -304,9 +304,9 @@ class SelfAttentionAnimation(Scene):
         for k_vector_group in self.kt_vectors:
             individual_brackets_k.add(k_vector_group[0].get_brackets())
         
-        # Add matrix labels - position Q label further left to avoid overlap
+        # Add matrix labels - position Q label at the top instead of left
         q_matrix_label = MathTex(r"Q", font_size=32, color=BLUE)
-        q_matrix_label.move_to([q_left - 0.8, q_center_y, 0])  # Moved further left
+        q_matrix_label.move_to([(q_right + q_left) / 2, q_top + 0.4, 0])  # Moved to top center
         
         kt_matrix_label = MathTex(r"K^T", font_size=32, color=RED)
         kt_matrix_label.move_to([(kt_right + kt_left) / 2, kt_top + 0.4, 0])
