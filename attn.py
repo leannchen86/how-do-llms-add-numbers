@@ -337,9 +337,6 @@ class SelfAttentionAnimation(Scene):
         # Create attention matrix result positioned in the middle
         attention_matrix = self.create_attention_matrix_result()
         
-        # Show a few key computations with curved arrows
-        self.show_key_computations()
-
     def create_attention_matrix_result(self):
         """Create the resulting attention matrix positioned in the center"""
         # Calculate actual results from our toy values (Q·K^T)
@@ -368,21 +365,3 @@ class SelfAttentionAnimation(Scene):
         )
         
         return attention_matrix
-
-    def show_key_computations(self):
-        """Show a few key dot product computations"""
-        # Show how Q_26 · K^T_26 produces the first attention score
-        comp_text = MathTex(
-            r"Q_{26} \cdot K^T_{26} \;=\; [0.2,\,0.8,\,0.1] \cdot [0.3,\,0.7,\,0.2] \;=\; 0.83",
-            font_size=16, color=YELLOW
-        )
-        comp_text.move_to(DOWN * 3.5)  # Below everything
-        
-        self.play(Write(comp_text))
-        self.wait(2)
-        
-        # Highlight the concept with Tex
-        final_note = Tex(r"Each cell shows how much one token 'attends' to another", font_size=16, color=GREEN)
-        final_note.move_to(DOWN * 4.2)
-        self.play(Write(final_note))
-        self.wait(1.5)
