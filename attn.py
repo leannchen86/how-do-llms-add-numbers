@@ -37,8 +37,8 @@ class SelfAttentionAnimation(Scene):
         
         # Create highlighted Q·K^T with MathTex
         highlighted_qkt = MathTex(r"Q \cdot K^T", font_size=36, color=YELLOW)
-        # Position it approximately where it appears in the formula
-        highlighted_qkt.move_to(formula_text.get_center() + LEFT * 0.5)
+        # Position it approximately where it appears in the formula, moved lower
+        highlighted_qkt.move_to(formula_text.get_center() + LEFT * 0.5 + DOWN * 0.8)
         
         # Show the complete formula first
         self.play(Write(formula_text))
