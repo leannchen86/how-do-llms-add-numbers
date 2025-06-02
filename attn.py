@@ -189,7 +189,8 @@ class SelfAttentionAnimation(Scene):
             vector_entries = [f"{val:.1f}" for val in values]
             vector_matrix = Matrix(
                 [vector_entries], 
-                element_to_mobject=lambda x: Tex(x, font_size=16)
+                element_to_mobject=lambda x: Tex(x, font_size=32),
+                h_buff=0.7
             )
             vector_matrix.set_color(BLUE)
             
