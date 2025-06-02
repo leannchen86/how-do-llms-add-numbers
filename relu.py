@@ -23,7 +23,7 @@ class ReLUAnimation(Scene):
         )
         
         # Title
-        title = MathTex(r"\text{ReLU Activation Function: } f(x) = \max(0, x)", font_size=32)
+        title = MathTex(r"\text{ReLU Activation Function: } f(x) = \max(0, x)", font_size=35)
         title.to_edge(UP)
         
         # Create a mathematical expression for ReLU
@@ -36,15 +36,15 @@ class ReLUAnimation(Scene):
         moving_dot = Dot(color=YELLOW)
         
         # Create labels for x and f(x) values
-        x_value_label = DecimalNumber(8, num_decimal_places=2)
-        fx_value_label = DecimalNumber(8, num_decimal_places=2)
+        x_value_label = DecimalNumber(8, num_decimal_places=2, font_size=30)
+        fx_value_label = DecimalNumber(8, num_decimal_places=2, font_size=30)
         
         # Set up a coordinate for tracking the values
         x_tracker = ValueTracker(8)  # Start from positive x = 8
         
         # Position the value labels
-        x_tex = MathTex("x =").next_to(x_value_label, LEFT)
-        fx_tex = MathTex(r"f(x) =").next_to(fx_value_label, LEFT)
+        x_tex = MathTex("x = ", font_size=30).next_to(x_value_label, LEFT*0.5)
+        fx_tex = MathTex(r"f(x) = ", font_size=30).next_to(fx_value_label, LEFT*0.5)
         
         x_group = VGroup(x_tex, x_value_label).to_corner(UR)
         fx_group = VGroup(fx_tex, fx_value_label).next_to(x_group, DOWN)
@@ -68,10 +68,18 @@ class ReLUAnimation(Scene):
         moving_dot.add_updater(update_dot)
         x_value_label.add_updater(update_x_label)
         fx_value_label.add_updater(update_fx_label)
-        
+
         # Animate the scene
         self.play(Write(title))
         self.play(Write(relu_formula))
+        
+        # Group title and formula, then move and scale them
+        title_formula_group = VGroup(title, relu_formula)
+        self.play(
+            title_formula_group.animate.to_edge(LEFT).scale(0.6),
+            run_time=1.5
+        )
+        
         self.play(Create(axes), Write(x_label), Write(y_label))
         self.play(Create(relu_graph))
         
@@ -80,10 +88,6 @@ class ReLUAnimation(Scene):
         
         # Move the dot from positive to negative to show the behavior
         self.play(x_tracker.animate.set_value(-8), run_time=3)
-        self.wait(1)
-        
-        # Move back to positive
-        self.play(x_tracker.animate.set_value(5), run_time=3)
         self.wait(1)
         
         # Clean up the moving elements
@@ -105,27 +109,14 @@ class ReLUAnimation(Scene):
         
         # Add text highlighting ReLU's property for negative inputs
         highlight_text = Tex(r"\text{ReLU outputs 0 for all negative inputs}",
-                           font_size=24, color=RED)
-        highlight_text.next_to(axes, DOWN, buff=0.5)
+                           font_size=30, color=RED)
+        highlight_text.next_to(axes, DOWN, buff=0.15)
         
         self.play(Write(highlight_text))
         self.wait(2)
         
-        # Add final text highlighting ReLU's importance
-        importance_text = [
-            Tex(r"\text{Key Properties of ReLU:}", font_size=24),
-            Tex(r"\text{• Simple computation}", font_size=20),
-            Tex(r"\text{• Non-linear but with linear behavior for positive inputs}", font_size=20),
-            Tex(r"\text{• Helps mitigate vanishing gradient problem}", font_size=20),
-            Tex(r"\text{• Promotes sparsity in the network}", font_size=20),
-        ]
-        
-        importance_group = VGroup(*importance_text).arrange(DOWN, aligned_edge=LEFT)
-        importance_group.to_edge(DOWN, buff=0.5)
-        
         self.play(
             FadeOut(highlight_text),
-            FadeIn(importance_group),
         )
         
         self.wait(2)

@@ -14,14 +14,16 @@ class SoftmaxVisualization(Scene):
         return exp_x / np.sum(exp_x)
     
     def construct(self):
-        # Title
-        title = Tex(r"\text{Softmax Function}", font_size=48)
-        title.to_edge(UP)
-        self.play(Write(title))
-        self.wait(1)
+        # Show softmax formula in left upper corner
+        formula = MathTex(
+            r"\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}",
+            font_size=32
+        )
+        formula.to_corner(UL)
+        self.play(Write(formula))
         
-        # Clean up
-        self.play(FadeOut(title))
+        # Show softmax curve visualization
+        self.show_softmax_curve(formula)
         
         # Test input values (including negatives)
         input_values = [2.0, -1.0, 0.5, -0.3]
@@ -32,9 +34,6 @@ class SoftmaxVisualization(Scene):
         # Create before/after visualization with shared baseline
         self.create_bar_comparison(input_values, softmax_values)
         
-        # Show formula
-        self.show_softmax_formula()
-        
         self.wait(2)
 
     def create_bar_comparison(self, input_values, softmax_values):
@@ -42,12 +41,10 @@ class SoftmaxVisualization(Scene):
         
         # Labels for sections
         before_softmax = Tex(r"\text{Before Softmax}", font_size=28, color=RED)
-        before_softmax.move_to(LEFT * 4.5 + UP * 3)
+        before_softmax.move_to(LEFT * 4.0 + UP * 3)
         
         after_softmax = Tex(r"\text{After Softmax}", font_size=28, color=BLUE)
         after_softmax.move_to(RIGHT * 2.5 + UP * 3)
-        
-        self.play(Write(before_softmax), Write(after_softmax))
         
         # Define common baseline
         baseline_y = -0.5
@@ -82,7 +79,7 @@ class SoftmaxVisualization(Scene):
             bar = Rectangle(width=0.8, height=height, fill_color=color, fill_opacity=0.8)
             
             x_pos = LEFT*4 + RIGHT*i*1.2
-            # All bars align to baseline - positive go up, negative go down
+            # All bars align to baseline — positive go up, negative go down
             if val >= 0:
                 bar.move_to(x_pos + UP*(baseline_y + height/2))
                 value_label = Tex(f"{val}", font_size=24)
@@ -94,9 +91,8 @@ class SoftmaxVisualization(Scene):
             
             before_bars.add(bar, value_label)
         
-        # After bars - all start from baseline
+        # After bars — all start from baseline
         after_bars = VGroup()
-        
         for i, val in enumerate(softmax_values):
             height = val * 2.0  # Height scaling for probabilities
             bar = Rectangle(width=0.8, height=height, fill_color=BLUE, fill_opacity=0.8)
@@ -114,18 +110,18 @@ class SoftmaxVisualization(Scene):
         self.play(Create(flashlight_group))
         self.play(
             flashlight_group.animate.shift(RIGHT*14),
-            run_time=2.5,
+            run_time=0.8,
             rate_func=smooth
         )
-        self.play(Write(baseline_txt), run_time=1)
-        
+        self.play(Write(baseline_txt), run_time=0.2)
+        self.play(Write(before_softmax), Write(after_softmax))
         # Everything happens at once
         self.play(
             FadeOut(flashlight_group),
             FadeOut(baseline_txt),
             Create(before_bars),
             Create(after_bars),
-            run_time=0.8
+            run_time=1.5
         )
         self.wait(1)
         
@@ -159,24 +155,94 @@ class SoftmaxVisualization(Scene):
             FadeOut(sum_display)
         )
 
-    def show_softmax_formula(self):
-        """Show the mathematical formula for softmax"""
-        formula = MathTex(
-            r"\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}",
-            font_size=48
+    def show_softmax_curve(self, formula):
+        """Show how softmax probabilities change as one input varies"""
+        # Create axes — slightly smaller and shifted down
+        axes = Axes(
+            x_range=[-4, 4, 1],
+            y_range=[0, 1, 0.2],
+            axis_config={"color": GREY},
+            x_length=8,
+            y_length=5,
         )
-        formula.move_to(ORIGIN)
+        # Shift entire axes downward by 0.5 units
+        axes.shift(DOWN * 0.5)
         
-        self.play(Write(formula))
-        self.wait(3)
+        # Add labels, reducing the font size of the y-axis
+        x_label = axes.get_x_axis_label("x_1")
+        y_label = axes.get_y_axis_label("P(x_1)")
         
-        # Add explanation
-        explanation = Tex(
-            r"\text{Converts any real numbers into probabilities that sum to 1}",
-            font_size=24,
-            color=GRAY
-        )
-        explanation.next_to(formula, DOWN, buff=1)
+        # Fixed values for other inputs
+        x2_fixed = 0.5
+        x3_fixed = -0.2
         
-        self.play(Write(explanation))
+        # Create softmax curve for the main input only
+        def softmax_prob_x1(x1):
+            """Calculate P(x1) when x1 varies, x2=0.5, x3=-0.2"""
+            logits = [x1, x2_fixed, x3_fixed]
+            probs = self.softmax(logits)
+            return probs[0]  # Probability of x1
+        
+        # Plot only the main curve
+        curve_x1 = axes.plot(softmax_prob_x1, x_range=[-4, 4], color=BLUE, stroke_width=4)
+        
+        # Title for the graph with P(x) prefix
+        graph_title = MathTex(r"\text{Softmax Output } P(x_1)", font_size=32)
+        graph_title.next_to(axes, UP, buff=0.8)
+        
+        # Animate the visualization
+        self.play(Write(graph_title))
+        self.play(Create(axes), Write(x_label), Write(y_label))
+        self.play(Create(curve_x1), run_time=2)
+        
+        # Add moving dot to show specific values
+        x_tracker = ValueTracker(-4)  # Start from the left
+        moving_dot = always_redraw(lambda: Dot(
+            axes.c2p(x_tracker.get_value(), softmax_prob_x1(x_tracker.get_value())),
+            color=YELLOW,
+            radius=0.12
+        ))
+        
+        # Value display using DecimalNumber to avoid LaTeX issues
+        x_value_display = DecimalNumber(-4, num_decimal_places=1, font_size=24)
+        p_value_display = DecimalNumber(0, num_decimal_places=3, font_size=24)
+        
+        x_label_text = MathTex(r"x_1 = ", font_size=20)
+        p_label_text = MathTex(r"P(x_1) = ", font_size=20)
+        
+        x_display_group = VGroup(x_label_text, x_value_display).arrange(RIGHT, buff=0.08)
+        p_display_group = VGroup(p_label_text, p_value_display).arrange(RIGHT, buff=0.08)
+        
+        value_display = VGroup(x_display_group, p_display_group).arrange(DOWN, buff=0.08)
+        
+        # Update function for the displays
+        def update_displays():
+            x_val = x_tracker.get_value()
+            p_val = softmax_prob_x1(x_val)
+            x_value_display.set_value(x_val)
+            p_value_display.set_value(p_val)
+            
+            # Position the display above the dot with some offset
+            dot_pos = axes.c2p(x_val, p_val)
+            value_display.move_to(dot_pos + UP * 1.2)
+        
+        value_display.add_updater(lambda m: update_displays())
+        
+        self.play(FadeIn(moving_dot), Write(value_display))
+        
+        # Move the dot from left to right once, slower to see the values change
+        self.play(x_tracker.animate.set_value(4), run_time=5, rate_func=smooth)
+        
         self.wait(2)
+        
+        # Clean up the graph
+        self.play(
+            FadeOut(graph_title),
+            FadeOut(axes),
+            FadeOut(x_label),
+            FadeOut(y_label),
+            FadeOut(curve_x1),
+            FadeOut(moving_dot),
+            FadeOut(value_display),
+            FadeOut(formula)
+        )

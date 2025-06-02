@@ -224,7 +224,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
     def latent_space(self, individual_embeddings, arrows, token_elements):
         # Enhanced title
-        explanation = Tex(r"\text{Tokens in high-dimensional space}", font_size=42, color=WHITE)
+        explanation = Tex(r"\text{Embeddings in high-dimensional space}", font_size=42, color=WHITE)
         explanation.to_edge(UP, buff=1)
         
         # Enhanced 3D axes - create off-screen to the right
@@ -288,9 +288,6 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         for i in range(4):
             transform_animations.append(Transform(individual_embeddings[i], dots[i]))
 
-        self.play(Write(explanation), run_time=1.5)
-        self.play(FadeOut(explanation), run_time=1)
-
         # Transform vectors to dots and fade in labels
         self.play(
             *transform_animations,
@@ -299,6 +296,8 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             *[FadeIn(label) for label in labels],
             run_time=2.5
         )
+        self.play(Write(explanation), run_time=1.5)
+        self.play(FadeOut(explanation), run_time=1)
         
         # NOW move camera to proper 3D view for the final scene
         self.move_camera(
