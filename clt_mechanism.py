@@ -5,7 +5,7 @@ class CLTAnimation(Scene):
     def construct(self):
         # Title
         title = Tex(r"\text{Cross-Layer Transcoder (CLT)}", font_size=48, color=BLUE)
-        title.to_edge(UP)
+        title.to_edge(UP, buff = 0.5)
         self.play(Write(title))
         self.wait(1)
         
@@ -33,13 +33,8 @@ class CLTAnimation(Scene):
         decoder_label.move_to(self.decoder_box.get_center())
         
         # Weight matrices labels
-        w_e_label = MathTex("W_e", font_size=24, color=GREEN).next_to(self.encoder_box, DOWN)
-        w_d_label = MathTex("W_d", font_size=24, color=BLUE).next_to(self.decoder_box, DOWN)
-        
-        # Dimension labels
-        input_dim = Tex(r"\text{768-D}\\\text{embeddings}", font_size=25, color=GRAY).next_to(self.encoder_box, LEFT)
-        sparse_dim = Tex(r"\text{16,384 features}\\\text{(\textasciitilde5 active)}", font_size=25, color=GRAY).next_to(self.sparse_box, DOWN, buff=0.5)
-        output_dim = Tex(r"\text{768-D}\\\text{embeddings}", font_size=25, color=GRAY).next_to(self.decoder_box, RIGHT)
+        w_e_label = MathTex("W_e", font_size=24, color=GREEN).next_to(self.encoder_box, UP)
+        w_d_label = MathTex("W_d", font_size=24, color=BLUE).next_to(self.decoder_box, UP)
         
         # ReLU + L1 loss label
         loss_label = Tex(r"\text{ReLU + L1 loss}", font_size=25, color=RED).next_to(self.sparse_box, UP)
@@ -61,9 +56,6 @@ class CLTAnimation(Scene):
         self.play(
             Write(w_e_label),
             Write(w_d_label),
-            Write(input_dim),
-            Write(sparse_dim),
-            Write(output_dim),
             Write(loss_label)
         )
         
@@ -74,6 +66,6 @@ class CLTAnimation(Scene):
         self.components = VGroup(
             self.encoder_box, self.sparse_box, self.decoder_box,
             encoder_label, sparse_label, decoder_label,
-            w_e_label, w_d_label, input_dim, sparse_dim, output_dim,
+            w_e_label, w_d_label,
             loss_label, arrow1, arrow2
         )
