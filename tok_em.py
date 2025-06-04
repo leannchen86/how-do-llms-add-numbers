@@ -26,9 +26,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         original_text.move_to(UP * 1.5)
         self.play(FadeOut(explanation))
         
-        original_glow = original_text.copy().set_stroke(WHITE, width=3, opacity=0.3)
         self.play(
-            FadeIn(original_glow),
             Write(original_text),
             run_time=2.8
         )
@@ -46,7 +44,6 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         token_group = VGroup(*tokens)
         
         self.play(
-            FadeOut(original_glow),
             original_text.animate.set_opacity(0.3),
             run_time=0.8
         )
