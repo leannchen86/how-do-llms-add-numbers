@@ -192,7 +192,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         for pos, txt, color in token_vectors:
             dot = Dot3D(radius=0.09, color=color).move_to(pos)
             dots.append(dot)
-            label = Tex(txt, font_size=20, color=color).scale(0.6).move_to(pos + OUT * 0.3 + UP * 0.3)
+            label = Tex(txt, font_size=25, color=color).scale(0.6).move_to(pos + OUT * 0.3 + UP * 0.3)
             self.add_fixed_orientation_mobjects(label)
             labels.append(label)
         
@@ -237,7 +237,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         for pos, txt, color in additional_tokens:
             dot = Dot3D(radius=0.09, color=color).move_to(pos).set_opacity(0.7)
             additional_dots.append(dot)
-            label = Tex(txt, font_size=20, color=color).scale(0.5).move_to(pos + OUT * 0.2 + UP * 0.2)
+            label = Tex(txt, font_size=25, color=color).scale(0.5).move_to(pos + OUT * 0.2 + UP * 0.2)
             self.add_fixed_orientation_mobjects(label)
             additional_labels.append(label)
         

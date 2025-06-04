@@ -23,7 +23,7 @@ class ExtendedAttentionCalculation(Scene):
         # Create the 4×4 attention matrix (under K^T, same height as Q), with larger numbers + no label
         self.create_attention_matrix()
         
-        # Place a “×” symbol exactly halfway between Q and K^T
+        # Place a "×" symbol exactly halfway between Q and K^T
         mult_symbol = MathTex(r"\times", font_size=48, color=WHITE)
         q_right = self.q_matrix.get_right()[0]
         kt_left = self.kt_matrix.get_left()[0]
@@ -49,7 +49,7 @@ class ExtendedAttentionCalculation(Scene):
             ["0.1", "0.3", "0.7"]    # Q_{=}
         ]
         
-        # “start_pos” replicates the original: LEFT * 3.2 + DOWN * 0.3
+        # "start_pos" replicates the original: LEFT * 3.2 + DOWN * 0.3
         start_pos = LEFT * 3.2 + DOWN * 0.3
         
         # 1) Place each number (font_size=32) in a 4×3 grid
@@ -121,11 +121,11 @@ class ExtendedAttentionCalculation(Scene):
         # Combine numbers + brackets into self.q_matrix
         self.q_matrix = VGroup(q_matrix_numbers, q_matrix_brackets)
         
-        # 3) Add “Q” label centered above the bracket
+        # 3) Add "Q" label centered above the bracket
         q_label = MathTex("Q", font_size=32, color=BLUE)
         q_label.move_to([ (q_left + q_right) / 2, q_top + 0.4, 0 ])
         
-        # 4) Add row labels (“Q_{26}”, “Q_{+}”, “Q_{55}”, “Q_{=}”)
+        # 4) Add row labels ("Q_{26}", "Q_{+}", "Q_{55}", "Q_{=}")
         token_labels = ["26", "+", "55", "="]
         self.q_row_labels = VGroup()
         for i, lbl in enumerate(token_labels):
@@ -221,7 +221,7 @@ class ExtendedAttentionCalculation(Scene):
         # Combine numbers + brackets into self.kt_matrix
         self.kt_matrix = VGroup(kt_matrix_numbers, kt_matrix_brackets)
         
-        # 3) Add “K^T” label above
+        # 3) Add "K^T" label above
         kt_label = MathTex("K^T", font_size=32, color=RED)
         kt_label.move_to([ (kt_left + kt_right) / 2, kt_top + 0.4, 0 ])
         
@@ -239,7 +239,7 @@ class ExtendedAttentionCalculation(Scene):
 
     def create_attention_matrix(self):
         """Build a 4×4 attention‐scores matrix that sits under K^T (no 'Attention Scores' text)."""
-        # Use Q’s top/bottom for vertical extent, and K^T’s left/right for horizontal
+        # Use Q's top/bottom for vertical extent, and K^T's left/right for horizontal
         q_top    = self.q_matrix.get_top()[1]
         q_bottom = self.q_matrix.get_bottom()[1]
         kt_left  = self.kt_matrix.get_left()[0]
@@ -250,7 +250,7 @@ class ExtendedAttentionCalculation(Scene):
         att_top    = q_top
         att_bottom = q_bottom
         
-        # Hard‐coded attention entries; last row “?” placeholders
+        # Hard‐coded attention entries; last row "?" placeholders
         attention_entries = [
             ["0.83", "0.32", "0.71", "0.42"],  # Q_{26} row
             ["0.36", "0.85", "0.45", "0.69"],  # Q_{+} row
@@ -258,21 +258,27 @@ class ExtendedAttentionCalculation(Scene):
             ["?",    "?",    "?",    "?"]     # Q_{=} row
         ]
         
-        # 1) Place each entry with font_size=24 (instead of 12)
+        # 1) Place each entry with font_size=32 (same as other matrices) and align with K^T columns
         att_matrix_numbers = VGroup()
         self.attention_entries = []  # store references for updating
-        # Compute grid spacing
-        h_spacing = (att_right - att_left - 1.0) / 3
-        v_spacing = (att_top - att_bottom - 0.8) / 3
+        
+        # Use the same positioning as K^T matrix for horizontal alignment
+        kt_start_x = 1.5  # from K^T's start_pos = RIGHT * 1.5 + UP * 2.5
+        kt_col_spacing = 0.9  # from K^T's RIGHT * col * 0.9
+        
+        # Use Q matrix's row positions for vertical alignment
+        q_start_pos = LEFT * 3.2 + DOWN * 0.3  # from Q matrix creation
+        q_row_spacing = 0.8  # from Q's DOWN * i * 0.8
         
         for i, row in enumerate(attention_entries):
             row_entries = []
             for j, val in enumerate(row):
-                # Larger font_size=24; “?” entries remain YELLOW
+                # Same font_size=32 as other matrices; "?" entries remain YELLOW
                 color = WHITE if val != "?" else YELLOW
-                entry = Tex(val, font_size=24, color=color)
-                x = att_left + 0.7 + j * h_spacing
-                y = att_top - 0.5 - i * v_spacing
+                entry = Tex(val, font_size=32, color=color)
+                # Align horizontally with K^T columns and vertically with Q rows
+                x = kt_start_x + j * kt_col_spacing
+                y = q_start_pos[1] + DOWN[1] * i * q_row_spacing
                 entry.move_to([x, y, 0])
                 att_matrix_numbers.add(entry)
                 row_entries.append(entry)
@@ -331,7 +337,7 @@ class ExtendedAttentionCalculation(Scene):
         # Combine numbers + brackets into self.attention_matrix
         self.attention_matrix = VGroup(att_matrix_numbers, att_matrix_brackets)
         
-        # We do NOT add any “Attention Scores” text here, per your request.
+        # We do NOT add any "Attention Scores" text here, per your request.
         self.attention_matrix_group = VGroup(self.attention_matrix)
 
     def animate_q_equals_calculations(self):
@@ -357,10 +363,10 @@ class ExtendedAttentionCalculation(Scene):
     def animate_single_calculation(self, column_index, q_values, k_values, token_name):
         """
         1) Highlight Q_{=} row
-        2) Highlight K^T's column “column_index”
+        2) Highlight K^T's column "column_index"
         3) Write out "Q_{=} · K^T_{token_name} = […], […]"
         4) Write out step‐by‐step "(q×k) + (…) + (…)"
-        5) Compute dot product, write “= 0.XX”, and update that cell in the 4×4
+        5) Compute dot product, write "= 0.XX", and update that cell in the 4×4
         6) Fade out everything
         """
         # 1) Highlight the Q_{=} row (row_index=3)
@@ -389,13 +395,13 @@ class ExtendedAttentionCalculation(Scene):
         step_tex = self.create_step_calculations(q_values, k_values, calc_tex)
         self.play(Write(step_tex))
         
-        # 5) Compute final float, write “= 0.XX” and update the attention‐matrix cell
+        # 5) Compute final float, write "= 0.XX" and update the attention‐matrix cell
         dot_product = sum(q * k for q, k in zip(q_values, k_values))
         result_tex = MathTex(f"= {dot_product:.2f}", font_size=24, color=GREEN)
         result_tex.next_to(step_tex, RIGHT, buff=0.3)
         self.play(Write(result_tex))
         
-        # Replace the “?” in self.attention_entries[row=3][col=column_index]
+        # Replace the "?" in self.attention_entries[row=3][col=column_index]
         self.update_attention_matrix_cell(3, column_index, f"{dot_product:.2f}")
         
         # 6) Fade out all overlays
@@ -409,7 +415,7 @@ class ExtendedAttentionCalculation(Scene):
 
     def create_row_background_highlight(self, matrix: VGroup, row_index: int, color, opacity):
         """
-        Return a rectangle behind row “row_index” (0‐based) of a 4×3 Q‐matrix,
+        Return a rectangle behind row "row_index" (0‐based) of a 4×3 Q‐matrix,
         so that that row is highlighted in color with the given opacity.
         """
         numbers = matrix[0]  # matrix[0] is the VGroup holding all Tex numbers in Q
@@ -433,11 +439,11 @@ class ExtendedAttentionCalculation(Scene):
 
     def create_column_background_highlight(self, matrix: VGroup, col_index: int, color, opacity):
         """
-        Return a rectangle behind column “col_index” (0‐based) of a 3×4 K^T‐matrix,
+        Return a rectangle behind column "col_index" (0‐based) of a 3×4 K^T‐matrix,
         so that that entire column is highlighted.
         """
         numbers = matrix[0]  # matrix[0] is the VGroup holding Tex numbers in K^T
-        # Each row has 4 numbers; pick index “row*4 + col_index” for row=0,1,2
+        # Each row has 4 numbers; pick index "row*4 + col_index" for row=0,1,2
         col_numbers = [numbers[r * 4 + col_index] for r in range(3)]
         
         left   = min(n.get_left()[0] for n in col_numbers) - 0.15
@@ -457,7 +463,7 @@ class ExtendedAttentionCalculation(Scene):
 
     def create_calculation_display(self, q_values, k_values, token_name):
         """
-        Return a MathTex showing “Q_{=} · K^T_{token_name} = [q0,q1,q2] · [k0,k1,k2]”
+        Return a MathTex showing "Q_{=} · K^T_{token_name} = [q0,q1,q2] · [k0,k1,k2]"
         positioned closer to the top‐center rather than the far left.
         """
         q_str = f"[{q_values[0]}, {q_values[1]}, {q_values[2]}]"
@@ -473,7 +479,7 @@ class ExtendedAttentionCalculation(Scene):
 
     def create_step_calculations(self, q_values, k_values, calc_tex):
         """
-        Return a MathTex showing “= (q0×k0) + (q1×k1) + (q2×k2)”
+        Return a MathTex showing "= (q0×k0) + (q1×k1) + (q2×k2)"
         positioned directly below calc_tex, with larger font.
         """
         steps = [f"({q}×{k})" for q, k in zip(q_values, k_values)]
@@ -484,7 +490,7 @@ class ExtendedAttentionCalculation(Scene):
 
     def update_attention_matrix_cell(self, row, col, new_value: str):
         """
-        Replace the Tex in self.attention_entries[row][col] (previously “?”)
+        Replace the Tex in self.attention_entries[row][col] (previously "?")
         with a new MathTex(new_value) in green, performing a Transform.
         """
         entry = self.attention_entries[row][col]

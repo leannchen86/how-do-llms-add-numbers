@@ -34,7 +34,7 @@ class MLPvsCLTComparison(Scene):
         self.play(FadeIn(neuron_label, scale=1.2))
 
         network_group, connections = mlp_model
-        network = network_group
+        network = network_group  # unchanged 3→5→5→1 structure
         neuron_arrow = Arrow(
             neuron_label.get_bottom() + DOWN * 0.1,
             network[2][3].get_center() + UP * 0.2,  # middle neuron in hidden layer
@@ -47,7 +47,7 @@ class MLPvsCLTComparison(Scene):
         self.wait(0.7)
         self.play(FadeOut(neuron_arrow), FadeOut(neuron_label))
 
-        # Demonstrate polysemantic neurons
+        # Demonstrate polysemantic neurons (with specific neurons firing together)
         self.demonstrate_polysemantic_neurons(mlp_model, ACTIVE_MLP_COLOR, MLP_COLOR)
 
         # Create CLT model off-screen to the right
@@ -212,84 +212,90 @@ class MLPvsCLTComparison(Scene):
         return VGroup(network, connections), inputs, output
 
     def demonstrate_polysemantic_neurons(self, model, active_color=BLUE, base_color=BLUE):
+        # Unpack the MLP: model is VGroup(network_VGroup, connections_VGroup)
         network_group, connections = model
-        network = network_group
+        network = network_group  # preserves 4-layer structure
 
         inputs = ["26", "seattle", "bird"]
         output_labels = ["number", "city", "animal"]
-        shared_neurons = [(1, 2), (2, 1)]
+        shared_neurons = [(1, 2), (2, 1)]  # same indices as before
 
         for j, (input_text, output_label) in enumerate(zip(inputs, output_labels)):
+            # Input label
             if input_text.isnumeric() or input_text in ['+', '-', '=', '*', '/']:
                 input_label = Tex(f"{input_text}", font_size=32, color=WHITE)
             else:
                 input_label = Tex(rf"\text{{{input_text}}}", font_size=32, color=WHITE)
-            input_label.next_to(network[0][1], LEFT, buff=0.5)
+            input_node = network[0][1]  # second neuron in first layer
+            input_label.next_to(input_node, LEFT, buff=0.5)
             current_input_display = VGroup(input_label)
 
+            # Output label
             if output_label.isnumeric() or output_label in ['+', '-', '=', '*', '/']:
                 output_label_text = Tex(f"{output_label}", font_size=30, color=GREEN)
             else:
                 output_label_text = Tex(rf"\text{{{output_label}}}", font_size=30, color=GREEN)
-            output_label_text.next_to(network[-1][0], RIGHT, buff=0.5)
+            output_node = network[-1][0]  # only neuron in last layer
+            output_label_text.next_to(output_node, RIGHT, buff=0.5)
             current_output_display = VGroup(output_label_text)
 
+            # Show input label
             self.play(FadeIn(current_input_display, shift=RIGHT * 0.3))
 
-            input_node = network[0][1]
+            # Identify shared neurons
             first_shared_neuron = network[shared_neurons[0][0]][shared_neurons[0][1]]
-            input_to_first_animations = [
-                Flash(input_node, color=WHITE, flash_radius=0.3),
-                input_node.animate.set_fill(active_color, opacity=0.9),
-                Flash(first_shared_neuron, color=active_color, flash_radius=0.4),
-                first_shared_neuron.animate.set_fill(active_color, opacity=0.9)
-            ]
-            for conn in connections:
-                if (np.allclose(conn.get_start(), input_node.get_center(), atol=0.1) and
-                    np.allclose(conn.get_end(), first_shared_neuron.get_center(), atol=0.1)):
-                    connection_pulse = conn.copy().set_stroke(active_color, width=4, opacity=0.8)
-                    input_to_first_animations.append(ShowPassingFlash(connection_pulse, time_width=0.7))
-                    break
-            self.play(*input_to_first_animations, run_time=0.8)
-
             second_shared_neuron = network[shared_neurons[1][0]][shared_neurons[1][1]]
-            first_to_second_animations = [
-                Flash(second_shared_neuron, color=active_color, flash_radius=0.4),
-                second_shared_neuron.animate.set_fill(active_color, opacity=0.9)
-            ]
+
+            # Build simultaneous activation animations:
+            sim_anims = []
+            # 1) Flash + fill input_node
+            sim_anims.append(Flash(input_node, color=active_color, flash_radius=0.4))
+            sim_anims.append(input_node.animate.set_fill(active_color, opacity=0.9))
+            # 2) Flash + fill first_shared_neuron
+            sim_anims.append(Flash(first_shared_neuron, color=active_color, flash_radius=0.4))
+            sim_anims.append(first_shared_neuron.animate.set_fill(active_color, opacity=0.9))
+            # 3) Flash + fill second_shared_neuron
+            sim_anims.append(Flash(second_shared_neuron, color=active_color, flash_radius=0.4))
+            sim_anims.append(second_shared_neuron.animate.set_fill(active_color, opacity=0.9))
+            # 4) Flash + fill output_node (use GREEN for output)
+            sim_anims.append(Flash(output_node, color=GREEN, flash_radius=0.4))
+            sim_anims.append(output_node.animate.set_fill(GREEN, opacity=0.7))
+
+            # Also identify and flash the three connecting edges:
+            #   a) input_node → first_shared_neuron
+            #   b) first_shared_neuron → second_shared_neuron
+            #   c) second_shared_neuron → output_node
             for conn in connections:
-                if (np.allclose(conn.get_start(), first_shared_neuron.get_center(), atol=0.1) and
-                    np.allclose(conn.get_end(), second_shared_neuron.get_center(), atol=0.1)):
-                    connection_pulse = conn.copy().set_stroke(active_color, width=4, opacity=0.8)
-                    first_to_second_animations.append(ShowPassingFlash(connection_pulse, time_width=0.7))
-                    break
-            self.play(*first_to_second_animations, run_time=0.8)
+                start_pt = conn.get_start()
+                end_pt = conn.get_end()
+                if (np.allclose(start_pt, input_node.get_center(), atol=0.1) and
+                    np.allclose(end_pt, first_shared_neuron.get_center(), atol=0.1)):
+                    sim_anims.append(ShowPassingFlash(conn.copy().set_stroke(active_color, width=4, opacity=0.8), time_width=0.7))
+                if (np.allclose(start_pt, first_shared_neuron.get_center(), atol=0.1) and
+                    np.allclose(end_pt, second_shared_neuron.get_center(), atol=0.1)):
+                    sim_anims.append(ShowPassingFlash(conn.copy().set_stroke(active_color, width=4, opacity=0.8), time_width=0.7))
+                if (np.allclose(start_pt, second_shared_neuron.get_center(), atol=0.1) and
+                    np.allclose(end_pt, output_node.get_center(), atol=0.1)):
+                    sim_anims.append(ShowPassingFlash(conn.copy().set_stroke(GREEN, width=4, opacity=0.8), time_width=0.7))
 
-            output_node = network[-1][0]
-            output_animations = [
-                Flash(output_node, color=GREEN, flash_radius=0.4),
-                output_node.animate.set_fill(GREEN, opacity=0.7)
-            ]
-            for shared_neuron_pos in shared_neurons:
-                shared_neuron = network[shared_neuron_pos[0]][shared_neuron_pos[1]]
-                for conn in connections:
-                    if (np.allclose(conn.get_start(), shared_neuron.get_center(), atol=0.1) and
-                        np.allclose(conn.get_end(), output_node.get_center(), atol=0.1)):
-                        pulse = conn.copy().set_stroke(GREEN, width=4, opacity=0.8)
-                        output_animations.append(ShowPassingFlash(pulse, time_width=0.6))
-            self.play(*output_animations, run_time=0.7)
+            # Play all flashes and fills together
+            self.play(*sim_anims, run_time=1.0)
 
+            # Show output label
             self.play(FadeIn(current_output_display, shift=LEFT * 0.3))
             self.wait(0.5)
-            reset_animations = [
-                FadeOut(current_input_display),
-                FadeOut(current_output_display),
+
+            # Reset fills back to base color
+            reset_anims = [
                 input_node.animate.set_fill(base_color, opacity=0.3),
-                output_node.animate.set_fill(base_color, opacity=0.3),
                 first_shared_neuron.animate.set_fill(base_color, opacity=0.3),
-                second_shared_neuron.animate.set_fill(base_color, opacity=0.3)
+                second_shared_neuron.animate.set_fill(base_color, opacity=0.3),
+                output_node.animate.set_fill(base_color, opacity=0.3),
+                FadeOut(current_input_display),
+                FadeOut(current_output_display)
             ]
-            self.play(*reset_animations, run_time=0.5)
+            self.play(*reset_anims, run_time=0.5)
+
             if j < len(inputs) - 1:
                 self.wait(0.2)
 
@@ -386,7 +392,6 @@ class MLPvsCLTComparison(Scene):
             *[FadeIn(display[0]) for display, _ in all_input_displays.values()],
             run_time=0.4
         )
-        # Build a flat list of Flash(...) and .animate calls
         token_anims = []
         for _, input_node in all_input_displays.values():
             token_anims.append(Flash(input_node, color=active_color, flash_radius=0.25))
