@@ -41,7 +41,7 @@ class EmbeddingContextEvolution(Scene):
     def embedding_evolution(self):
         # 1. Tokens (spaced horizontally) – only "26" and "="
         tokens = VGroup(*[
-            Tex(rf"\text{{'{tok}'}}", font_size=50, color=BLUE_C)
+            Tex(rf"\text{{‘{tok}’}}", font_size=50, color=BLUE_C)
             for tok in ['26', '=']
         ])
         for i, token in enumerate(tokens):

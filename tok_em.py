@@ -22,7 +22,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         self.play(Write(explanation), run_time=1.5)
         self.wait(0.8)
         
-        original_text = Tex(r"\text{'26 + 55 ='}", font_size=44, color=WHITE)
+        original_text = Tex(r"\text{‘26 + 55 =’}", font_size=44, color=WHITE)
         original_text.move_to(UP * 1.5)
         self.play(FadeOut(explanation))
         
@@ -33,10 +33,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         self.wait(1.2)
         
         tokens = [
-            Tex(r"\text{'26'}", font_size=60, color=self.token_colors[0]),
-            Tex(r"\text{'+'}", font_size=60, color=self.token_colors[1]),
-            Tex(r"\text{'55'}", font_size=60, color=self.token_colors[2]),
-            Tex(r"\text{'='}", font_size=60, color=self.token_colors[3])
+            Tex(r"\text{‘26’}", font_size=60, color=self.token_colors[0]),
+            Tex(r"\text{‘+’}", font_size=60, color=self.token_colors[1]),
+            Tex(r"\text{‘55’}", font_size=60, color=self.token_colors[2]),
+            Tex(r"\text{‘=’}", font_size=60, color=self.token_colors[3])
         ]
         token_positions = [LEFT * 3, LEFT * 1, RIGHT * 1, RIGHT * 3]
         for token, pos in zip(tokens, token_positions):
@@ -181,10 +181,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         dots = []
         labels = []
         token_vectors = [
-            (axes.c2p(2.2, 1.5, 2.8), r"\text{'26'}", self.token_colors[0]),
-            (axes.c2p(-2.8, -1.8, 0.5), r"\text{'+'}", self.token_colors[1]),
-            (axes.c2p(2.5, 1.2, 3.1), r"\text{'55'}", self.token_colors[2]),
-            (axes.c2p(-2.5, -2.1, 0.8), r"\text{'='}", self.token_colors[3])
+            (axes.c2p(2.2, 1.5, 2.8), r"\text{‘26’}", self.token_colors[0]),
+            (axes.c2p(-2.8, -1.8, 0.5), r"\text{‘+’}", self.token_colors[1]),
+            (axes.c2p(2.5, 1.2, 3.1), r"\text{‘55’}", self.token_colors[2]),
+            (axes.c2p(-2.5, -2.1, 0.8), r"\text{‘=’}", self.token_colors[3])
         ]
         for pos, txt, color in token_vectors:
             dot = Dot3D(radius=0.09, color=color).move_to(pos)
@@ -214,19 +214,19 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         
         # Additional tokens (all light up simultaneously)
         additional_tokens = [
-            (axes.c2p(1.8, 2.1, 2.3), r"\text{'7'}", BLUE_A),
-            (axes.c2p(2.7, 0.9, 3.5), r"\text{'100'}", BLUE_A),
-            (axes.c2p(1.5, 1.8, 2.1), r"\text{'42'}", BLUE_A),
-            (axes.c2p(-2.2, -1.5, 1.1), r"\text{'-'}", GREEN_C),
-            (axes.c2p(-3.1, -2.4, 0.2), r"\text{'*'}", GREEN_C),
-            (axes.c2p(-2.0, -2.8, 0.9), r"\text{'/'}", GREEN_C),
-            (axes.c2p(-1.2, 3.2, -2.1), r"\text{'the'}", PURPLE_C),
-            (axes.c2p(0.5, -3.1, -1.8), r"\text{'and'}", PURPLE_C),
-            (axes.c2p(3.2, -0.8, -2.5), r"\text{'is'}", PURPLE_C),
-            (axes.c2p(-3.5, 1.2, -1.2), r"\text{'of'}", PURPLE_C),
-            (axes.c2p(0.8, 2.8, -3.2), r"\text{'.'}", ORANGE),
-            (axes.c2p(-0.5, -2.2, -2.8), r"\text{','}", ORANGE),
-            (axes.c2p(2.1, -2.5, -1.5), r"\text{'?'}", ORANGE),
+            (axes.c2p(1.8, 2.1, 2.3), r"\text{‘7’}", BLUE_A),
+            (axes.c2p(2.7, 0.9, 3.5), r"\text{‘100’}", BLUE_A),
+            (axes.c2p(1.5, 1.8, 2.1), r"\text{‘42’}", BLUE_A),
+            (axes.c2p(-2.2, -1.5, 1.1), r"\text{‘-’}", GREEN_C),
+            (axes.c2p(-3.1, -2.4, 0.2), r"\text{‘*’}", GREEN_C),
+            (axes.c2p(-2.0, -2.8, 0.9), r"\text{‘/’}", GREEN_C),
+            (axes.c2p(-1.2, 3.2, -2.1), r"\text{‘the’}", PURPLE_C),
+            (axes.c2p(0.5, -3.1, -1.8), r"\text{‘and’}", PURPLE_C),
+            (axes.c2p(3.2, -0.8, -2.5), r"\text{‘is’}", PURPLE_C),
+            (axes.c2p(-3.5, 1.2, -1.2), r"\text{‘of’}", PURPLE_C),
+            (axes.c2p(0.8, 2.8, -3.2), r"\text{‘.’}", ORANGE),
+            (axes.c2p(-0.5, -2.2, -2.8), r"\text{‘,’}", ORANGE),
+            (axes.c2p(2.1, -2.5, -1.5), r"\text{‘?’}", ORANGE),
         ]
         
         additional_dots = []

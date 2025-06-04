@@ -41,10 +41,10 @@ class SelfAttentionAnimation(Scene):
         self.wait(1)
 
         transformations = VGroup(
-            MathTex(r"'26' \rightarrow \mathbf{e}_{26} + \mathbf{p}_1 = \mathbf{x}_1", font_size=26),
-            MathTex(r"'+' \rightarrow \mathbf{e}_{+} + \mathbf{p}_2 = \mathbf{x}_2", font_size=26),
-            MathTex(r"'55' \rightarrow \mathbf{e}_{55} + \mathbf{p}_3 = \mathbf{x}_3", font_size=26),
-            MathTex(r"'=' \rightarrow \mathbf{e}_{=} + \mathbf{p}_4 = \mathbf{x}_4", font_size=26)
+            MathTex(r"\text{‘26’} \rightarrow \mathbf{e}_{26} + \mathbf{p}_1 = \mathbf{x}_1", font_size=26),
+            MathTex(r"\text{‘+’} \rightarrow \mathbf{e}_{+} + \mathbf{p}_2 = \mathbf{x}_2", font_size=26),
+            MathTex(r"\text{‘55’} \rightarrow \mathbf{e}_{55} + \mathbf{p}_3 = \mathbf{x}_3", font_size=26),
+            MathTex(r"\text{‘=’} \rightarrow \mathbf{e}_{=} + \mathbf{p}_4 = \mathbf{x}_4", font_size=26)
         )
         transformations.arrange(DOWN, buff=0.6).move_to(ORIGIN)
 
@@ -65,10 +65,10 @@ class SelfAttentionAnimation(Scene):
 
         # Original literal tokens
         self.tokens = VGroup(
-            Tex(r"'26'", font_size=28),
-            Tex(r"'+'", font_size=28),
-            Tex(r"'55'", font_size=28),
-            Tex(r"'='", font_size=28)
+            Tex(r"‘26’", font_size=28),
+            Tex(r"‘+’", font_size=28),
+            Tex(r"‘55’", font_size=28),
+            Tex(r"‘=’", font_size=28)
         ).arrange(RIGHT, buff=1.5).next_to(token_text, RIGHT, buff=1)
         self.play(Write(self.tokens))
 
