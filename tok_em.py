@@ -22,7 +22,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         self.play(Write(explanation), run_time=1.5)
         self.wait(0.8)
         
-        original_text = Tex(r"\text{'26 + 55 ='}", font_size=44, color=GRAY_A)
+        original_text = Tex(r"\text{'26 + 55 ='}", font_size=44, color=WHITE)
         original_text.move_to(UP * 1.5)
         self.play(FadeOut(explanation))
         
@@ -94,16 +94,16 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             values = [round(np.random.uniform(-1, 1), 2) for _ in range(4)]
             vector_components = VGroup()
             for j, val in enumerate(values):
-                text = Tex(f"{val:.2f}", font_size=16, color=GRAY_A)
+                text = Tex(f"{val:.2f}", font_size=16, color=WHITE)
                 if j == 0:
                     text.move_to(ORIGIN)
                 else:
                     text.next_to(vector_components[-1], DOWN, buff=0.2)
                 vector_components.add(text)
-            ellipsis = Tex(r"\vdots", font_size=20, color=GRAY_B)
+            ellipsis = Tex(r"\vdots", font_size=20, color=WHITE)
             ellipsis.next_to(vector_components[-1], DOWN, buff=0.2)
             vector_components.add(ellipsis)
-            final_val = Tex(f"{round(np.random.uniform(-1, 1), 2):.2f}", font_size=16, color=GRAY_A)
+            final_val = Tex(f"{round(np.random.uniform(-1, 1), 2):.2f}", font_size=16, color=WHITE)
             final_val.next_to(ellipsis, DOWN, buff=0.2)
             vector_components.add(final_val)
             
@@ -130,8 +130,8 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             )
             arrows.append(arrow)
         
-        dim_label = Tex(r"\text{768-dim}", font_size=38, color=GRAY_C)
-        brace = Tex(r"\{", font_size=150, color=GRAY_C)
+        dim_label = Tex(r"\text{768-dim}", font_size=38, color=WHITE)
+        brace = Tex(r"\{", font_size=150, color=WHITE)
         all_embeddings = VGroup(*embeddings)
         brace.next_to(all_embeddings, LEFT, buff=0.3)
         dim_label.next_to(brace, LEFT, buff=0.2)
@@ -164,7 +164,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             y_length=8,
             z_length=8,
             axis_config={
-                "color": GRAY_B,
+                "color": WHITE,
                 "stroke_width": 2,
                 "include_tip": True,
                 "tip_length": 0.2
