@@ -6,17 +6,17 @@ class EqualSignContext(Scene):
         # 1) Build each equation so that the "=" is its own submobject
         # ─────────────────────────────────────────────────────────────────
         eq1 = Tex(
-            "'",         # [0] opening quote
+            "‘",         # [0] opening quote
             "26 + 55 ",  # [1] the digits/operators plus a trailing space
             "=",         # [2] the equals-sign
-            "'",         # [3] closing quote
+            "’",         # [3] closing quote
             font_size=50
         )
         eq2 = Tex(
-            "'",
+            "‘",
             "150 - 100 ",  # notice the space after “100” so "=" won’t jam against it
             "=",
-            "'",
+            "’",
             font_size=50
         )
 
