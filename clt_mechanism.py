@@ -5,7 +5,7 @@ class CLTAnimation(Scene):
     def construct(self):
         # Title
         title = Tex(r"\text{Cross-Layer Transcoder (CLT)}", font_size=48, color=BLUE)
-        title.to_edge(UP, buff = 0.5)
+        title.to_edge(UP, buff = 1.8)
         self.play(Write(title))
         self.wait(1)
         
@@ -33,11 +33,11 @@ class CLTAnimation(Scene):
         decoder_label.move_to(self.decoder_box.get_center())
         
         # Weight matrices labels
-        w_e_label = MathTex("W_e", font_size=24, color=GREEN).next_to(self.encoder_box, UP)
-        w_d_label = MathTex("W_d", font_size=24, color=BLUE).next_to(self.decoder_box, UP)
+        w_e_label = MathTex("W_e", font_size=30, color=GREEN).next_to(self.encoder_box, UP)
+        w_d_label = MathTex("W_d", font_size=30, color=BLUE).next_to(self.decoder_box, UP)
         
         # ReLU + L1 loss label
-        loss_label = Tex(r"\text{ReLU + L1 loss}", font_size=25, color=RED).next_to(self.sparse_box, UP)
+        loss_label = Tex(r"\text{ReLU + L1 loss}", font_size=30, color=RED).next_to(self.sparse_box, UP)
         
         # Arrows
         arrow1 = Arrow(self.encoder_box.get_right(), self.sparse_box.get_left(), color=WHITE)

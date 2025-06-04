@@ -18,7 +18,7 @@ class ReLUAnimation(Scene):
         # Create the ReLU function
         relu_graph = axes.plot(
             lambda x: max(0, x),
-            x_range=[-10, 10],
+            x_range=[-10, 9],
             color=BLUE,
         )
         

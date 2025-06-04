@@ -71,7 +71,7 @@ class MLPvsCLTComparison(Scene):
         )
         self.play(
             clt_model.animate.move_to(ORIGIN).scale(1.2),
-            clt_title.animate.move_to([0, 3.0, 0]).scale(0.8),
+            clt_title.animate.move_to(ORIGIN).scale(1.2).to_edge(UP, buff=0.7),
             feature_label.animate.move_to([5.5, 3.0, 0]),
             run_time=1.2,
             rate_func=smooth
@@ -307,19 +307,19 @@ class MLPvsCLTComparison(Scene):
         computation_steps = [
             {
                 "phase": "Number parsing",
-                "input_indices": [0, 2],  # “26” and “55”
+                "input_indices": [0, 2],  # "26" and "55"
                 "layer": 1,
                 "feature_indices": [0, 1, 2, 3]
             },
             {
                 "phase": "Operation processing",
-                "input_indices": [1],  # “+”
+                "input_indices": [1],  # "+"
                 "layer": 2,
                 "feature_indices": [0, 1, 2]
             },
             {
                 "phase": "Computation trigger",
-                "input_indices": [3],  # “=”
+                "input_indices": [3],  # "="
                 "layer": 3,
                 "feature_indices": [0, 1, 2]
             }
@@ -376,9 +376,9 @@ class MLPvsCLTComparison(Scene):
         )
         self.wait(0.2)
 
-        # 1) Fade in ALL input tokens *immediately* (so they’re clearly visible before “81”)
+        # 1) Fade in ALL input tokens *immediately* (so they're clearly visible before "81")
         all_input_displays = {}
-        for input_text, input_idx in [("26", 0), ("+", 1), ("55", 2), ("=", 3)]:
+        for input_text, input_idx in [('26', 0), ('+', 1), ('55', 2), ('=', 3)]:
             input_node = network[0][input_idx]
             if input_text.isnumeric() or input_text in ['+', '-', '=', '*', '/']:
                 input_label = Tex(f"{input_text}", font_size=26, color=WHITE)
@@ -458,7 +458,7 @@ class MLPvsCLTComparison(Scene):
                                     )
             self.play(*animations, run_time=0.8)
 
-            # Dim the token‐highlight circles again (unless it’s the last step)
+            # Dim the token‐highlight circles again (unless it's the last step)
             if step_num < len(computation_steps) - 1:
                 self.play(
                     *[circle.animate.set_stroke(opacity=0.0) for circle in relevant_circles],
@@ -466,7 +466,7 @@ class MLPvsCLTComparison(Scene):
                 )
             self.wait(0.2)
 
-        # 3) Finally, flash “81” with its connections
+        # 3) Finally, flash "81" with its connections
         output_node = network[4][0]
         output_label = Tex("81", font_size=28, color=GREEN)
         output_label.next_to(output_node, RIGHT, buff=0.2)

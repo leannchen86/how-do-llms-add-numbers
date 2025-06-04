@@ -126,7 +126,7 @@ class ExtendedAttentionCalculation(Scene):
         q_label.move_to([ (q_left + q_right) / 2, q_top + 0.4, 0 ])
         
         # 4) Add row labels ("Q_{26}", "Q_{+}", "Q_{55}", "Q_{=}")
-        token_labels = ["26", "+", "55", "="]
+        token_labels = ['26', '+', '55', '=']
         self.q_row_labels = VGroup()
         for i, lbl in enumerate(token_labels):
             row_label = MathTex(f"Q_{{{lbl}}}", font_size=20, color=BLUE)
@@ -226,7 +226,7 @@ class ExtendedAttentionCalculation(Scene):
         kt_label.move_to([ (kt_left + kt_right) / 2, kt_top + 0.4, 0 ])
         
         # 4) Add column labels below each column: K^T_{26}, K^T_{+}, K^T_{55}, K^T_{=}
-        token_labels = ["26", "+", "55", "="]
+        token_labels = ['26', '+', '55', '=']
         self.kt_col_labels = VGroup()
         for i, lbl in enumerate(token_labels):
             col_label = MathTex(f"K^T_{{{lbl}}}", font_size=20, color=RED)
@@ -354,7 +354,7 @@ class ExtendedAttentionCalculation(Scene):
             [0.1, 0.9, 0.6],   # K_{55}
             [0.5, 0.3, 0.8]    # K_{=}
         ]
-        token_names = ["26", "+", "55", "="]
+        token_names = ['26', '+', '55', '=']
         
         for i, (kt_col_vals, token_name) in enumerate(zip(kt_columns, token_names)):
             self.animate_single_calculation(i, q_equals_values, kt_col_vals, token_name)
@@ -366,7 +366,8 @@ class ExtendedAttentionCalculation(Scene):
         2) Highlight K^T's column "column_index"
         3) Write out "Q_{=} · K^T_{token_name} = […], […]"
         4) Write out step‐by‐step "(q×k) + (…) + (…)"
-        5) Compute dot product, write "= 0.XX", and update that cell in the 4×4
+        —with the blue "=" aligned under the white subscript "=" of calc_tex.
+        5) Compute dot product and update that cell in the 4×4 (no green text)
         6) Fade out everything
         """
         # 1) Highlight the Q_{=} row (row_index=3)
@@ -393,25 +394,33 @@ class ExtendedAttentionCalculation(Scene):
         
         # 4) Show "= (0.1×k0) + (0.3×k1) + (0.7×k2)"
         step_tex = self.create_step_calculations(q_values, k_values, calc_tex)
+        
+        # ── NEW BLOCK: Align step_tex's "=" under the white "=" in calc_tex ──
+        #  a) Find the subscript "=" from calc_tex (usually the first "=" in the MathTex)
+        all_eqs_in_calc = calc_tex.get_part_by_tex("=")
+        subscript_eq = all_eqs_in_calc[0]   # That is the "=" inside Q_{=}
+        
+        #  b) Find the "=" inside step_tex (there is exactly one of them)
+        step_eq = step_tex.get_part_by_tex("=")[0]
+        
+        #  c) Force their left edges to coincide
+        step_eq.align_to(subscript_eq, LEFT)
+        # ────────────────────────────────────────────────────────────────
+        
         self.play(Write(step_tex))
         
-        # 5) Compute final float, write "= 0.XX" and update the attention‐matrix cell
+        # 5) Compute final float, and update the attention‐matrix cell (no green text)
         dot_product = sum(q * k for q, k in zip(q_values, k_values))
-        result_tex = MathTex(f"= {dot_product:.2f}", font_size=24, color=GREEN)
-        result_tex.next_to(step_tex, RIGHT, buff=0.3)
-        self.play(Write(result_tex))
-        
-        # Replace the "?" in self.attention_entries[row=3][col=column_index]
         self.update_attention_matrix_cell(3, column_index, f"{dot_product:.2f}")
         
-        # 6) Fade out all overlays
+        # 6) Fade out overlays (just calc_tex, step_tex, and the highlights)
         self.play(
             FadeOut(calc_tex),
             FadeOut(step_tex),
-            FadeOut(result_tex),
             FadeOut(q_row_hl),
             FadeOut(kt_col_hl)
         )
+
 
     def create_row_background_highlight(self, matrix: VGroup, row_index: int, color, opacity):
         """

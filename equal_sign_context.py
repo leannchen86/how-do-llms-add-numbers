@@ -51,7 +51,7 @@ class EqualSignContext(Scene):
         # ─────────────────────────────────────────────────────────────────
         explanation = Tex(
             "Same ‘=’, but different contextual meanings",
-            font_size=32
+            font_size=40
         )
         explanation.next_to(VGroup(eq1, eq2), UP, buff=0.5)
 

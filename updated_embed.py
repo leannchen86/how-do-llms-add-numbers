@@ -42,7 +42,7 @@ class EmbeddingContextEvolution(Scene):
         # 1. Tokens (spaced horizontally) – only "26" and "="
         tokens = VGroup(*[
             Tex(rf"\text{{'{tok}'}}", font_size=50, color=BLUE_C)
-            for tok in ["26", "="]
+            for tok in ['26', '=']
         ])
         for i, token in enumerate(tokens):
             x = (i - 0.5) * self.token_spacing  # positions at -0.5 and +0.5 times spacing
@@ -59,7 +59,7 @@ class EmbeddingContextEvolution(Scene):
         ]
         original_embeddings = VGroup()
         for i, vals in enumerate(original_vals):
-            emb = self.create_embedding_vector(vals, BLUE_C, scale_factor=0.8)
+            emb = self.create_embedding_vector(vals, WHITE, scale_factor=0.8)
             emb.move_to(tokens[i].get_center() + DOWN * 1.2)
             original_embeddings.add(emb)
 
@@ -100,7 +100,7 @@ class EmbeddingContextEvolution(Scene):
         ]
         new_embeddings = VGroup()
         for i, vals in enumerate(new_vals):
-            ne = self.create_embedding_vector(vals, BLUE_C, scale_factor=0.8)
+            ne = self.create_embedding_vector(vals, WHITE, scale_factor=0.8)
             ne.move_to(tokens[i].get_center() + DOWN * 1.2)
             new_embeddings.add(ne)
 

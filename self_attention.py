@@ -41,10 +41,10 @@ class SelfAttentionAnimation(Scene):
         self.wait(1)
 
         transformations = VGroup(
-            MathTex(r'"26" \rightarrow \mathbf{e}_{26} + \mathbf{p}_1 = \mathbf{x}_1', font_size=26),
-            MathTex(r'"+" \rightarrow \mathbf{e}_{+} + \mathbf{p}_2 = \mathbf{x}_2', font_size=26),
-            MathTex(r'"55" \rightarrow \mathbf{e}_{55} + \mathbf{p}_3 = \mathbf{x}_3', font_size=26),
-            MathTex(r'"=" \rightarrow \mathbf{e}_{=} + \mathbf{p}_4 = \mathbf{x}_4', font_size=26)
+            MathTex(r"'26' \rightarrow \mathbf{e}_{26} + \mathbf{p}_1 = \mathbf{x}_1", font_size=26),
+            MathTex(r"'+' \rightarrow \mathbf{e}_{+} + \mathbf{p}_2 = \mathbf{x}_2", font_size=26),
+            MathTex(r"'55' \rightarrow \mathbf{e}_{55} + \mathbf{p}_3 = \mathbf{x}_3", font_size=26),
+            MathTex(r"'=' \rightarrow \mathbf{e}_{=} + \mathbf{p}_4 = \mathbf{x}_4", font_size=26)
         )
         transformations.arrange(DOWN, buff=0.6).move_to(ORIGIN)
 
@@ -65,10 +65,10 @@ class SelfAttentionAnimation(Scene):
 
         # Original literal tokens
         self.tokens = VGroup(
-            Tex(r'"26"', font_size=28),
-            Tex(r'"+"', font_size=28),
-            Tex(r'"55"', font_size=28),
-            Tex(r'"="', font_size=28)
+            Tex(r"'26'", font_size=28),
+            Tex(r"'+'", font_size=28),
+            Tex(r"'55'", font_size=28),
+            Tex(r"'='", font_size=28)
         ).arrange(RIGHT, buff=1.5).next_to(token_text, RIGHT, buff=1)
         self.play(Write(self.tokens))
 
@@ -95,7 +95,7 @@ class SelfAttentionAnimation(Scene):
     # and W_ labels at arrow midpoints
     # ------------------------------------------------------------------
     def animate_qkv_transformation(self):
-        token_labels = ["26", "+", "55", "="]
+        token_labels = ['26', '+', '55', '=']
 
         for i, symbol in enumerate(self.x_symbols):
             # Wider arrow spacing: use 0.6 instead of 0.4
@@ -203,7 +203,7 @@ class SelfAttentionAnimation(Scene):
 
     def show_individual_q_vectors(self):
         """Show individual Q vectors as horizontal row vectors positioned where Q matrix will be"""
-        token_labels = ["26", "+", "55", "="]
+        token_labels = ['26', '+', '55', '=']
 
         # Create individual Q vectors with 3D toy values (as row vectors)
         self.q_vectors = VGroup()
@@ -246,7 +246,7 @@ class SelfAttentionAnimation(Scene):
 
     def show_individual_kt_vectors(self):
         """Show individual K vectors as column vectors positioned where K^T matrix will be"""
-        token_labels = ["26", "+", "55", "="]
+        token_labels = ['26', '+', '55', '=']
 
         # Create individual K vectors (which will become columns in K^T)
         self.kt_vectors = VGroup()
@@ -409,7 +409,7 @@ class SelfAttentionAnimation(Scene):
         )
 
         # Create Q row labels at exact existing positions
-        token_labels = ["26", "+", "55", "="]
+        token_labels = ['26', '+', '55', '=']
         q_row_labels = VGroup()
         for i, label in enumerate(token_labels):
             row_label = MathTex(f"Q_{{{label}}}", font_size=20, color=BLUE)

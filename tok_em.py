@@ -33,10 +33,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         self.wait(1.2)
         
         tokens = [
-            Tex(r"\text{'26'}", font_size=45, color=self.token_colors[0]),
-            Tex(r"\text{'+'}", font_size=45, color=self.token_colors[1]),
-            Tex(r"\text{'55'}", font_size=45, color=self.token_colors[2]),
-            Tex(r"\text{'='}", font_size=45, color=self.token_colors[3])
+            Tex(r"\text{'26'}", font_size=60, color=self.token_colors[0]),
+            Tex(r"\text{'+'}", font_size=60, color=self.token_colors[1]),
+            Tex(r"\text{'55'}", font_size=60, color=self.token_colors[2]),
+            Tex(r"\text{'='}", font_size=60, color=self.token_colors[3])
         ]
         token_positions = [LEFT * 3, LEFT * 1, RIGHT * 1, RIGHT * 3]
         for token, pos in zip(tokens, token_positions):
@@ -53,10 +53,10 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             self.play(token.animate.scale(1 / 1.3), run_time=0.4)
         
         token_ids = [
-            Tex(r"\text{ID: 253}", font_size=18, color=YELLOW_C),
-            Tex(r"\text{ID: 16}", font_size=18, color=YELLOW_C),
-            Tex(r"\text{ID: 361}", font_size=18, color=YELLOW_C),
-            Tex(r"\text{ID: 54}", font_size=18, color=YELLOW_C)
+            Tex(r"\text{ID: 253}", font_size=30, color=YELLOW_C),
+            Tex(r"\text{ID: 16}", font_size=30, color=YELLOW_C),
+            Tex(r"\text{ID: 361}", font_size=30, color=YELLOW_C),
+            Tex(r"\text{ID: 54}", font_size=30, color=YELLOW_C)
         ]
         for token_id, token in zip(token_ids, tokens):
             token_id.next_to(token, DOWN, buff=0.8)
@@ -91,16 +91,16 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
             values = [round(np.random.uniform(-1, 1), 2) for _ in range(4)]
             vector_components = VGroup()
             for j, val in enumerate(values):
-                text = Tex(f"{val:.2f}", font_size=16, color=WHITE)
+                text = Tex(f"{val:.2f}", font_size=28, color=WHITE)
                 if j == 0:
                     text.move_to(ORIGIN)
                 else:
                     text.next_to(vector_components[-1], DOWN, buff=0.2)
                 vector_components.add(text)
-            ellipsis = Tex(r"\vdots", font_size=20, color=WHITE)
+            ellipsis = Tex(r"\vdots", font_size=28, color=WHITE)
             ellipsis.next_to(vector_components[-1], DOWN, buff=0.2)
             vector_components.add(ellipsis)
-            final_val = Tex(f"{round(np.random.uniform(-1, 1), 2):.2f}", font_size=16, color=WHITE)
+            final_val = Tex(f"{round(np.random.uniform(-1, 1), 2):.2f}", font_size=28, color=WHITE)
             final_val.next_to(ellipsis, DOWN, buff=0.2)
             vector_components.add(final_val)
             
@@ -148,7 +148,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         # Repositioned explanation to avoid overlap
         explanation = Tex(
             r"\text{Embeddings in high-dimensional space}", 
-            font_size=25, 
+            font_size=27, 
             color=WHITE
         )
         explanation.to_edge(UL, buff=1.95)
@@ -167,7 +167,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
                 "tip_length": 0.2
             }
         )
-        axes.shift(RIGHT * 20)
+        axes.shift(RIGHT * 20).scale(1.5)
         
         self.add(axes)
         self.play(
@@ -189,7 +189,7 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         for pos, txt, color in token_vectors:
             dot = Dot3D(radius=0.09, color=color).move_to(pos)
             dots.append(dot)
-            label = Tex(txt, font_size=25, color=color).scale(0.6).move_to(pos + OUT * 0.3 + UP * 0.3)
+            label = Tex(txt, font_size=30, color=color).scale(0.8).move_to(pos + OUT * 0.3 + UP * 0.3)
             self.add_fixed_orientation_mobjects(label)
             labels.append(label)
         
@@ -232,9 +232,9 @@ class LLMTokenizationAndEmbedding(ThreeDScene):
         additional_dots = []
         additional_labels = []
         for pos, txt, color in additional_tokens:
-            dot = Dot3D(radius=0.09, color=color).move_to(pos).set_opacity(0.7)
+            dot = Dot3D(radius=0.09, color=color).move_to(pos)
             additional_dots.append(dot)
-            label = Tex(txt, font_size=25, color=color).scale(0.5).move_to(pos + OUT * 0.2 + UP * 0.2)
+            label = Tex(txt, font_size=30, color=color).scale(0.8).move_to(pos + OUT * 0.2 + UP * 0.2)
             self.add_fixed_orientation_mobjects(label)
             additional_labels.append(label)
         
