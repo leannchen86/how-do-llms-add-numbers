@@ -148,9 +148,9 @@ class SelfAttentionAnimation(Scene):
 
             # Define resulting Q_label, K_label, V_label symbols using token_labels
             label = token_labels[i]
-            q_vec = MathTex(f"Q_{{{label}}}", font_size=24, color=BLUE).move_to(q_pos)
-            k_vec = MathTex(f"K_{{{label}}}", font_size=24, color=RED).move_to(k_pos)
-            v_vec = MathTex(f"V_{{{label}}}", font_size=24, color=GREEN).move_to(v_pos)
+            q_vec = MathTex(f"q_{{{label}}}", font_size=24, color=BLUE).move_to(q_pos)
+            k_vec = MathTex(f"k_{{{label}}}", font_size=24, color=RED).move_to(k_pos)
+            v_vec = MathTex(f"v_{{{label}}}", font_size=24, color=GREEN).move_to(v_pos)
 
             # Store final Q/K/V symbols for later fade/transform
             token_qkv = VGroup(q_vec, k_vec, v_vec)
@@ -208,10 +208,10 @@ class SelfAttentionAnimation(Scene):
         # Create individual Q vectors with 3D toy values (as row vectors)
         self.q_vectors = VGroup()
         q_values = [
-            [0.2, 0.8, 0.1],  # Q_26
-            [0.9, 0.1, 0.3],  # Q_+
-            [0.4, 0.6, 0.9],  # Q_55
-            [0.1, 0.3, 0.7]   # Q_=
+            [0.2, 0.8, 0.1],  # q_26
+            [0.9, 0.1, 0.3],  # q_+
+            [0.4, 0.6, 0.9],  # q_55
+            [0.1, 0.3, 0.7]   # q_=
         ]
 
         # Position down and to the left where the Q matrix will be
@@ -231,7 +231,7 @@ class SelfAttentionAnimation(Scene):
             vector_matrix.move_to(start_pos + DOWN * i * 0.8)
 
             # Add subscript label to the left
-            label_text = MathTex(f"Q_{{{label}}}", font_size=20, color=BLUE)
+            label_text = MathTex(f"q_{{{label}}}", font_size=20, color=BLUE)
             label_text.next_to(vector_matrix, LEFT, buff=0.3)
 
             vector_group = VGroup(vector_matrix, label_text)
@@ -251,10 +251,10 @@ class SelfAttentionAnimation(Scene):
         # Create individual K vectors (which will become columns in K^T)
         self.kt_vectors = VGroup()
         k_values = [
-            [0.3, 0.7, 0.2],  # K_26
-            [0.8, 0.2, 0.4],  # K_+
-            [0.1, 0.9, 0.6],  # K_55
-            [0.5, 0.3, 0.8]   # K_=
+            [0.3, 0.7, 0.2],  # k_26
+            [0.8, 0.2, 0.4],  # k_+
+            [0.1, 0.9, 0.6],  # k_55
+            [0.5, 0.3, 0.8]   # k_=
         ]
 
         # Position up and to the left where the K^T matrix will be
@@ -277,7 +277,7 @@ class SelfAttentionAnimation(Scene):
             vector_matrix.move_to(start_pos + RIGHT * i * 0.9)
 
             # Add subscript label below
-            label_text = MathTex(r"K^T_{" + label + r"}", font_size=20, color=RED)
+            label_text = MathTex(r"k^T_{" + label + r"}", font_size=20, color=RED)
             label_text.next_to(vector_matrix, DOWN, buff=0.2)
 
             vector_group = VGroup(vector_matrix, label_text)
@@ -331,17 +331,17 @@ class SelfAttentionAnimation(Scene):
 
         # Get the same values used in individual vectors
         q_values = [
-            [0.2, 0.8, 0.1],  # Q_26
-            [0.9, 0.1, 0.3],  # Q_+
-            [0.4, 0.6, 0.9],  # Q_55
-            [0.1, 0.3, 0.7]   # Q_=
+            [0.2, 0.8, 0.1],  # q_26
+            [0.9, 0.1, 0.3],  # q_+
+            [0.4, 0.6, 0.9],  # q_55
+            [0.1, 0.3, 0.7]   # q_=
         ]
 
         k_values = [
-            [0.3, 0.7, 0.2],  # K_26
-            [0.8, 0.2, 0.4],  # K_+
-            [0.1, 0.9, 0.6],  # K_55
-            [0.5, 0.3, 0.8]   # K_=
+            [0.3, 0.7, 0.2],  # k_26
+            [0.8, 0.2, 0.4],  # k_+
+            [0.1, 0.9, 0.6],  # k_55
+            [0.5, 0.3, 0.8]   # k_=
         ]
 
         # Create Q matrix numbers at exact existing positions
@@ -412,7 +412,7 @@ class SelfAttentionAnimation(Scene):
         token_labels = ['26', '+', '55', '=']
         q_row_labels = VGroup()
         for i, label in enumerate(token_labels):
-            row_label = MathTex(f"Q_{{{label}}}", font_size=20, color=BLUE)
+            row_label = MathTex(f"q_{{{label}}}", font_size=20, color=BLUE)
             row_label.move_to(q_label_positions[i])  # Exact position from existing label
             q_row_labels.add(row_label)
 
@@ -480,7 +480,7 @@ class SelfAttentionAnimation(Scene):
         # Create K^T column labels at exact existing positions
         kt_col_labels = VGroup()
         for i, label in enumerate(token_labels):
-            col_label = MathTex(r"K^T_{" + label + r"}", font_size=20, color=RED)
+            col_label = MathTex(r"k^T_{" + label + r"}", font_size=20, color=RED)
             col_label.move_to(kt_label_positions[i])  # Exact position
             kt_col_labels.add(col_label)
 
@@ -580,7 +580,7 @@ class SelfAttentionAnimation(Scene):
         )
 
         # Create the "Attention Matrix" label in the center
-        att_label = Tex(r"\text{Attention Matrix}", font_size=30, color=WHITE)
+        att_label = Tex(r"\text{Attention Scores}", font_size=30, color=WHITE)
         att_label.move_to([(att_left + att_right) / 2, (att_top + att_bottom) / 2, 0])
 
         attention_matrix = VGroup(att_matrix_brackets, att_label)
