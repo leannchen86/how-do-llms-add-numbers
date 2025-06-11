@@ -43,10 +43,10 @@ class ExtendedAttentionCalculation(Scene):
         """Build the Q‐matrix on the left, with its bracket and row labels."""
         # Q‐values (4 rows × 3 columns)
         q_values = [
-            ["0.2", "0.8", "0.1"],   # Q_{26}
-            ["0.9", "0.1", "0.3"],   # Q_{+}
-            ["0.4", "0.6", "0.9"],   # Q_{55}
-            ["0.1", "0.3", "0.7"]    # Q_{=}
+            ["0.2", "0.8", "0.1"],   # q_{26}
+            ["0.9", "0.1", "0.3"],   # q_{+}
+            ["0.4", "0.6", "0.9"],   # q_{55}
+            ["0.1", "0.3", "0.7"]    # q_{=}
         ]
         
         # "start_pos" replicates the original: LEFT * 3.2 + DOWN * 0.3
@@ -125,11 +125,11 @@ class ExtendedAttentionCalculation(Scene):
         q_label = MathTex("Q", font_size=32, color=BLUE)
         q_label.move_to([ (q_left + q_right) / 2, q_top + 0.4, 0 ])
         
-        # 4) Add row labels ("Q_{26}", "Q_{+}", "Q_{55}", "Q_{=}")
+        # 4) Add row labels ("q_{26}", "q_{+}", "q_{55}", "q_{=}")
         token_labels = ['26', '+', '55', '=']
         self.q_row_labels = VGroup()
         for i, lbl in enumerate(token_labels):
-            row_label = MathTex(f"Q_{{{lbl}}}", font_size=20, color=BLUE)
+            row_label = MathTex(f"q_{{{lbl}}}", font_size=20, color=BLUE)
             # Vertical center of each row = start_pos[1] + i*(−0.8)
             row_center_y = start_pos[1] + DOWN[1] * i * 0.8
             row_label.move_to([ q_left - 0.8, row_center_y, 0 ])
@@ -142,10 +142,10 @@ class ExtendedAttentionCalculation(Scene):
         """Build a 3×4 K^T‐matrix, higher on screen and shifted right, plus bracket and labels."""
         # K values (transposed form: each sublist is one key)
         k_values = [
-            [0.3, 0.7, 0.2],  # K_{26}
-            [0.8, 0.2, 0.4],  # K_{+}
-            [0.1, 0.9, 0.6],  # K_{55}
-            [0.5, 0.3, 0.8]   # K_{=}
+            [0.3, 0.7, 0.2],  # k_{26}
+            [0.8, 0.2, 0.4],  # k_{+}
+            [0.1, 0.9, 0.6],  # k_{55}
+            [0.5, 0.3, 0.8]   # k_{=}
         ]
         
         # Shift K^T up higher (UP * 2.5) and right (RIGHT * 1.5)
@@ -225,11 +225,11 @@ class ExtendedAttentionCalculation(Scene):
         kt_label = MathTex("K^T", font_size=32, color=RED)
         kt_label.move_to([ (kt_left + kt_right) / 2, kt_top + 0.4, 0 ])
         
-        # 4) Add column labels below each column: K^T_{26}, K^T_{+}, K^T_{55}, K^T_{=}
+        # 4) Add column labels below each column: k^T_{26}, k^T_{+}, k^T_{55}, k^T_{=}
         token_labels = ['26', '+', '55', '=']
         self.kt_col_labels = VGroup()
         for i, lbl in enumerate(token_labels):
-            col_label = MathTex(f"K^T_{{{lbl}}}", font_size=20, color=RED)
+            col_label = MathTex(f"k^T_{{{lbl}}}", font_size=20, color=RED)
             col_center_x = start_pos[0] + RIGHT[0] * i * 0.9
             col_label.move_to([ col_center_x, kt_bottom - 0.5, 0 ])
             self.kt_col_labels.add(col_label)
@@ -252,10 +252,10 @@ class ExtendedAttentionCalculation(Scene):
         
         # Hard‐coded attention entries; last row "?" placeholders
         attention_entries = [
-            ["0.83", "0.32", "0.71", "0.42"],  # Q_{26} row
-            ["0.36", "0.85", "0.45", "0.69"],  # Q_{+} row
-            ["0.66", "0.58", "0.87", "0.92"],  # Q_{55} row
-            ["?",    "?",    "?",    "?"]     # Q_{=} row
+            ["0.83", "0.32", "0.71", "0.42"],  # q_{26} row
+            ["0.36", "0.85", "0.45", "0.69"],  # q_{+} row
+            ["0.66", "0.58", "0.87", "0.92"],  # q_{55} row
+            ["?",    "?",    "?",    "?"]     # q_{=} row
         ]
         
         # 1) Place each entry with font_size=32 (same as other matrices) and align with K^T columns
@@ -349,10 +349,10 @@ class ExtendedAttentionCalculation(Scene):
         # Hard‐coded Q_{=} row vector and each K^T column
         q_equals_values = [0.1, 0.3, 0.7]
         kt_columns = [
-            [0.3, 0.7, 0.2],   # K_{26}
-            [0.8, 0.2, 0.4],   # K_{+}
-            [0.1, 0.9, 0.6],   # K_{55}
-            [0.5, 0.3, 0.8]    # K_{=}
+            [0.3, 0.7, 0.2],   # k_{26}
+            [0.8, 0.2, 0.4],   # k_{+}
+            [0.1, 0.9, 0.6],   # k_{55}
+            [0.5, 0.3, 0.8]    # k_{=}
         ]
         token_names = ['26', '+', '55', '=']
         
@@ -472,13 +472,13 @@ class ExtendedAttentionCalculation(Scene):
 
     def create_calculation_display(self, q_values, k_values, token_name):
         """
-        Return a MathTex showing "Q_{=} · K^T_{token_name} = [q0,q1,q2] · [k0,k1,k2]"
+        Return a MathTex showing "q_{=} · k^T_{token_name} = [q0,q1,q2] · [k0,k1,k2]"
         positioned closer to the top‐center rather than the far left.
         """
         q_str = f"[{q_values[0]}, {q_values[1]}, {q_values[2]}]"
         k_str = f"[{k_values[0]}, {k_values[1]}, {k_values[2]}]"
         calc_tex = MathTex(
-            rf"Q_{{=}} \cdot K^T_{{{token_name}}} = {q_str} \cdot {k_str}",
+            rf"q_{{=}} \cdot k^T_{{{token_name}}} = {q_str} \cdot {k_str}",
             font_size=28,  # increased from 16 → 28
             color=WHITE
         )
@@ -487,15 +487,16 @@ class ExtendedAttentionCalculation(Scene):
         return calc_tex
 
     def create_step_calculations(self, q_values, k_values, calc_tex):
-        """
-        Return a MathTex showing "= (q0×k0) + (q1×k1) + (q2×k2)"
-        positioned directly below calc_tex, with larger font.
-        """
-        steps = [f"({q}×{k})" for q, k in zip(q_values, k_values)]
-        step_tex = MathTex(f"= {' + '.join(steps)}", font_size=28, color=BLUE)
-        # **Place it right under calc_tex**:
+        # use \times instead of the × symbol
+        steps = [f"({q}\\times {k})" for q, k in zip(q_values, k_values)]
+        step_tex = MathTex(
+            f"= {' + '.join(steps)}",
+            font_size=28,
+            color=BLUE
+        )
         step_tex.next_to(calc_tex, DOWN, aligned_edge=LEFT, buff=0.2)
         return step_tex
+
 
     def update_attention_matrix_cell(self, row, col, new_value: str):
         """
@@ -503,6 +504,6 @@ class ExtendedAttentionCalculation(Scene):
         with a new MathTex(new_value) in green, performing a Transform.
         """
         entry = self.attention_entries[row][col]
-        new_tex = MathTex(new_value, font_size=24, color=GREEN)
+        new_tex = MathTex(new_value, font_size=32, color=GREEN)
         new_tex.move_to(entry)
         self.play(Transform(entry, new_tex))

@@ -10,6 +10,10 @@ class ReLUAnimation(Scene):
             x_length=10,
             y_length=6,
         )
+        # Add numeric labels at every 2 steps on both axes
+        x_labels = range(-10, 12, 2)  # -10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10
+        y_labels = range(0, 11, 2)    # 0, 2, 4, 6, 8, 10
+        axes.add_coordinates(x_labels, y_labels)
         
         # Add labels
         x_label = axes.get_x_axis_label("x")

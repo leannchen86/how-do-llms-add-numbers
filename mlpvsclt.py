@@ -173,7 +173,7 @@ class MLPvsCLTComparison(Scene):
             (3, 1, 4, 0),
             (3, 2, 4, 0)
         ]
-
+        # Add connections from connection_map
         for layer1, node1, layer2, node2 in connection_map:
             connection = Line(
                 network[layer1][node1].get_center(),
@@ -184,6 +184,7 @@ class MLPvsCLTComparison(Scene):
             )
             connections.add(connection)
 
+        # Add random connections
         np.random.seed(42)
         for layer_idx in range(layers - 1):
             current_layer_size = nodes_per_layer[layer_idx]
@@ -194,12 +195,12 @@ class MLPvsCLTComparison(Scene):
                         (l1 == layer_idx and n1 == i and l2 == layer_idx + 1 and n2 == j)
                         for l1, n1, l2, n2 in connection_map
                     )
-                    if not existing and np.random.random() < 0.3:
+                    if not existing and np.random.random() < 0.7:
                         connection = Line(
                             network[layer_idx][i].get_center(),
                             network[layer_idx + 1][j].get_center(),
-                            stroke_opacity=0.15,
-                            stroke_width=0.3,
+                            stroke_opacity=0.3,
+                            stroke_width=0.5,
                             stroke_color=color
                         )
                         connections.add(connection)
