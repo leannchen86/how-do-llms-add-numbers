@@ -42,7 +42,7 @@ class EmbeddingContextEvolution(Scene):
         # 1. Tokens (spaced horizontally) – only "26" and "="
         tokens = VGroup(*[
             Tex(rf"\text{{‘{tok}’}}", font_size=50, color=BLUE_C)
-            for tok in ['26', '=']
+            for tok in ['=', '26']
         ])
         for i, token in enumerate(tokens):
             x = (i - 0.5) * self.token_spacing  # positions at -0.5 and +0.5 times spacing
@@ -54,8 +54,8 @@ class EmbeddingContextEvolution(Scene):
 
         # 2. Original (generic) embeddings under each token
         original_vals = [
+            [-0.65, 0.34, -0.18, 0.52, 0.73],  # "="
             [0.23, -0.45, 0.12, 0.78, -0.34],  # "26"
-            [-0.65, 0.34, -0.18, 0.52, 0.73]   # "="
         ]
         original_embeddings = VGroup()
         for i, vals in enumerate(original_vals):
@@ -67,8 +67,8 @@ class EmbeddingContextEvolution(Scene):
         original_meanings = VGroup(*[
             Tex(text, font_size=28, color=GREEN_C)
             for text in [
-                r"\text{number}",     # for "26"
                 r"\text{operator}",   # for "="
+                r"\text{number}",     # for "26"
             ]
         ])
         for i, meaning in enumerate(original_meanings):
@@ -95,8 +95,8 @@ class EmbeddingContextEvolution(Scene):
 
         # 6. Prepare new (contextualized) embeddings and meanings
         new_vals = [
-            [0.18, -0.62, 0.35, 0.91, -0.47],  # "26" → "first operand in addition"
-            [-0.71, 0.48, -0.32, 0.65, 0.94]   # "=" → "conclusion of 26 + 55"
+            [-0.71, 0.48, -0.32, 0.65, 0.94],  # "26" → "first operand in addition"
+            [0.18, -0.62, 0.35, 0.91, -0.47],   # "=" → "conclusion of 26 + 55"
         ]
         new_embeddings = VGroup()
         for i, vals in enumerate(new_vals):
@@ -104,13 +104,10 @@ class EmbeddingContextEvolution(Scene):
             ne.move_to(tokens[i].get_center() + DOWN * 1.2)
             new_embeddings.add(ne)
 
-        new_meanings = VGroup(*[
-            Tex(text, font_size=28, color=ORANGE)
-            for text in [
-                r"\text{first operand in addition}",        # for "26"
-                r"\text{conclusion of 26 + 55}",            # for "="
-            ]
-        ])
+        new_meanings = VGroup(
+            Tex(r"\text{conclusion of 26 + 55}",   font_size=28, color=ORANGE), #"="
+            Tex(r"\text{first operand in addition}", font_size=28, color=ORANGE),  # "26"
+        )
         for i, nm in enumerate(new_meanings):
             nm.next_to(new_embeddings[i], DOWN, buff=1.0)
 
