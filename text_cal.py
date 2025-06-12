@@ -7,8 +7,12 @@ class SoftmaxTransformation(Scene):
         attention_matrix = self.create_attention_matrix()
         attention_matrix.move_to(LEFT * 4.0)  # Position left matrix 4.0 units left of origin
         
+        # Add "Before Softmax" text above the attention matrix
+        before_text = MathTex(r"\text{Before Softmax}", font_size=42, color=WHITE)
+        before_text.next_to(attention_matrix, UP, buff=0.5)
+        
         # Add the attention matrix to the scene
-        self.play(FadeIn(attention_matrix))
+        self.play(FadeIn(attention_matrix), FadeIn(before_text))
         self.wait(1)
         
         # Create shorter arrow
@@ -55,8 +59,12 @@ class SoftmaxTransformation(Scene):
         softmax_matrix = self.create_softmax_matrix(softmax_values)
         softmax_matrix.move_to(RIGHT * 4.0)  # Position right matrix 4.0 units right of origin
         
+        # Add "After Softmax" text above the softmax matrix
+        after_text = MathTex(r"\text{After Softmax}", font_size=42, color=WHITE)
+        after_text.next_to(softmax_matrix, UP, buff=0.5)
+        
         # Animate the creation of the softmax matrix
-        self.play(Create(softmax_matrix), run_time=2)
+        self.play(FadeIn(softmax_matrix), FadeIn(after_text), run_time=2)
         self.wait(1)
         
         # Optional: Highlight the transformation by showing one row calculation

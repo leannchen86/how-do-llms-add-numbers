@@ -3,8 +3,8 @@ from manim import *
 class AttentionWeightsAnimation(Scene):
     def construct(self):
         # Title
-        title = Text(
-            "Attention Weights Applied to Value Vectors", 
+        title = Tex(
+            r"\text{Attention Weights Applied to Value Vectors}", 
             font_size=36
         )
         title.to_edge(UP, buff=1)
