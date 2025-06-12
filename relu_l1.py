@@ -24,14 +24,12 @@ class ReLUL1VectorDemo(Scene):
 
         # Create vectors
         raw_vec  = vector_tex(raw_values, color_neg=RED, spacing=", \\,")
-        relu_vec = vector_tex(relu_values, color_neg=False, spacing=", \\,")
+        relu_vec = vector_tex(relu_values, color_neg=False, spacing=", \\;")
 
         # Title
-        title = Tex(r"Sparse~Feature~Activation~Vector", font_size=40)
+        title = Tex(r"Sparse~Feature~Activation~Vector~Transformation", font_size=40)
         # Position title just above the raw vector
         title.next_to(raw_vec, UP, buff=2.5)
-        self.play(FadeIn(title))
-        self.wait(0.5)
 
         # Positions
         FIRST_VEC_Y = 1.2
@@ -39,11 +37,18 @@ class ReLUL1VectorDemo(Scene):
 
         # 1) Show raw vector
         raw_vec.move_to([0, FIRST_VEC_Y, 0])
-        self.play(FadeIn(raw_vec))
+        # Add 'original' label to the left of the raw vector
+        original_label = Tex(r"original", font_size=32)
+        original_label.next_to(raw_vec, LEFT, buff=0.7)
+        self.play(FadeIn(title))
+        self.play(FadeIn(raw_vec), FadeIn(original_label))
         self.wait(0.8)
 
         # 2) ReLU: arrow, text, and transformed vector
         relu_vec.move_to([0, SECOND_VEC_Y, 0])
+        # Add 'updated' label to the left of the relu vector
+        updated_label = Tex(r"updated", font_size=32)
+        updated_label.next_to(relu_vec, LEFT, buff=0.7)
         arrow1 = Arrow(
             start=[0, FIRST_VEC_Y - 0.4, 0],
             end=[0, SECOND_VEC_Y + 0.4, 0],
@@ -61,7 +66,8 @@ class ReLUL1VectorDemo(Scene):
         self.play(
             FadeIn(arrow1),
             FadeIn(relu_label),
-            FadeIn(relu_vec, shift=DOWN * 0.2)
+            FadeIn(relu_vec, shift=DOWN * 0.2),
+            FadeIn(updated_label)
         )
         self.wait(0.8)
 
