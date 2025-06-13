@@ -222,14 +222,14 @@ class ExtendedAttentionCalculation(Scene):
         self.kt_matrix = VGroup(kt_matrix_numbers, kt_matrix_brackets)
         
         # 3) Add "K^T" label above
-        kt_label = MathTex("K^T", font_size=32, color=RED)
+        kt_label = MathTex(r"K^\top", font_size=32, color=RED)
         kt_label.move_to([ (kt_left + kt_right) / 2, kt_top + 0.4, 0 ])
         
         # 4) Add column labels below each column: k^T_{26}, k^T_{+}, k^T_{55}, k^T_{=}
         token_labels = ['26', '+', '55', '=']
         self.kt_col_labels = VGroup()
         for i, lbl in enumerate(token_labels):
-            col_label = MathTex(f"k^T_{{{lbl}}}", font_size=20, color=RED)
+            col_label = MathTex(rf"(k_{{{lbl}}})^\top", font_size=20, color=RED)
             col_center_x = start_pos[0] + RIGHT[0] * i * 0.9
             col_label.move_to([ col_center_x, kt_bottom - 0.5, 0 ])
             self.kt_col_labels.add(col_label)
@@ -238,8 +238,8 @@ class ExtendedAttentionCalculation(Scene):
         self.kt_matrix_group = VGroup(self.kt_matrix, kt_label, self.kt_col_labels)
 
     def create_attention_matrix(self):
-        """Build a 4×4 attention‐scores matrix that sits under K^T (no 'Attention Scores' text)."""
-        # Use Q's top/bottom for vertical extent, and K^T's left/right for horizontal
+        """Build a 4×4 attention‐scores matrix that sits under K^\top (no 'Attention Scores' text)."""
+        # Use Q's top/bottom for vertical extent, and K^\top's left/right for horizontal
         q_top    = self.q_matrix.get_top()[1]
         q_bottom = self.q_matrix.get_bottom()[1]
         kt_left  = self.kt_matrix.get_left()[0]
@@ -258,13 +258,13 @@ class ExtendedAttentionCalculation(Scene):
             ["?",    "?",    "?",    "?"]     # q_{=} row
         ]
         
-        # 1) Place each entry with font_size=32 (same as other matrices) and align with K^T columns
+        # 1) Place each entry with font_size=32 (same as other matrices) and align with K^\top columns
         att_matrix_numbers = VGroup()
         self.attention_entries = []  # store references for updating
         
-        # Use the same positioning as K^T matrix for horizontal alignment
-        kt_start_x = 1.5  # from K^T's start_pos = RIGHT * 1.5 + UP * 2.5
-        kt_col_spacing = 0.9  # from K^T's RIGHT * col * 0.9
+        # Use the same positioning as K^\top matrix for horizontal alignment
+        kt_start_x = 1.5  # from K^\top's start_pos = RIGHT * 1.5 + UP * 2.5
+        kt_col_spacing = 0.9  # from K^\top's RIGHT * col * 0.9
         
         # Use Q matrix's row positions for vertical alignment
         q_start_pos = LEFT * 3.2 + DOWN * 0.3  # from Q matrix creation
@@ -276,7 +276,7 @@ class ExtendedAttentionCalculation(Scene):
                 # Same font_size=32 as other matrices; "?" entries remain YELLOW
                 color = WHITE if val != "?" else YELLOW
                 entry = Tex(val, font_size=32, color=color)
-                # Align horizontally with K^T columns and vertically with Q rows
+                # Align horizontally with K^\top columns and vertically with Q rows
                 x = kt_start_x + j * kt_col_spacing
                 y = q_start_pos[1] + DOWN[1] * i * q_row_spacing
                 entry.move_to([x, y, 0])
@@ -472,13 +472,13 @@ class ExtendedAttentionCalculation(Scene):
 
     def create_calculation_display(self, q_values, k_values, token_name):
         """
-        Return a MathTex showing "q_{=} · k^T_{token_name} = [q0,q1,q2] · [k0,k1,k2]"
+        Return a MathTex showing "q_{=} · (k_{token_name})^\top = [q0,q1,q2] · [k0,k1,k2]"
         positioned closer to the top‐center rather than the far left.
         """
         q_str = f"[{q_values[0]}, {q_values[1]}, {q_values[2]}]"
         k_str = f"[{k_values[0]}, {k_values[1]}, {k_values[2]}]"
         calc_tex = MathTex(
-            rf"q_{{=}} \cdot k^T_{{{token_name}}} = {q_str} \cdot {k_str}",
+            rf"q_{{=}} \cdot (k_{{{token_name}}})^\top = {q_str} \cdot {k_str}",
             font_size=28,  # increased from 16 → 28
             color=WHITE
         )

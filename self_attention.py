@@ -169,9 +169,9 @@ class SelfAttentionAnimation(Scene):
     # Attention-formula highlight
     # ------------------------------------------------------------------
     def show_attention_formula_and_highlight(self):
-        formula_text = MathTex(r"\mathrm{Attention}(Q,\,K,\,V) = \mathrm{Softmax}\Bigl(\tfrac{Q K^T}{\sqrt{d_k}}\Bigr) V", font_size=36)
+        formula_text = MathTex(r"\mathrm{Attention}(Q,\,K,\,V) = \mathrm{Softmax}\Bigl(\tfrac{Q K^\top}{\sqrt{d_k}}\Bigr) V", font_size=36)
         formula_text.move_to(ORIGIN)
-        highlighted_qkt = MathTex(r"Q K^T", font_size=36, color=YELLOW)
+        highlighted_qkt = MathTex(r"Q K^\top", font_size=36, color=YELLOW)
         highlighted_qkt.move_to(formula_text.get_center() + DOWN * 0.8)
 
         self.play(Write(formula_text))
@@ -181,7 +181,7 @@ class SelfAttentionAnimation(Scene):
         self.play(highlighted_qkt.animate.scale(1.8), run_time=2)
         self.wait(2)
 
-        explanation = Tex(r"We'll focus on computing $Q K^T$ first", font_size=24)
+        explanation = Tex(r"We'll focus on computing $Q K^\top$ first", font_size=24)
         explanation.next_to(formula_text, DOWN, buff=1)
         self.play(Write(explanation))
         self.wait(1.5)
@@ -277,7 +277,7 @@ class SelfAttentionAnimation(Scene):
             vector_matrix.move_to(start_pos + RIGHT * i * 0.9)
 
             # Add subscript label below
-            label_text = MathTex(r"k^T_{" + label + r"}", font_size=20, color=RED)
+            label_text = MathTex(r"(k_{" + label + r"})^\top", font_size=20, color=RED)
             label_text.next_to(vector_matrix, DOWN, buff=0.2)
 
             vector_group = VGroup(vector_matrix, label_text)
@@ -480,7 +480,7 @@ class SelfAttentionAnimation(Scene):
         # Create K^T column labels at exact existing positions
         kt_col_labels = VGroup()
         for i, label in enumerate(token_labels):
-            col_label = MathTex(r"k^T_{" + label + r"}", font_size=20, color=RED)
+            col_label = MathTex(r"(k_{" + label + r"})^\top", font_size=20, color=RED)
             col_label.move_to(kt_label_positions[i])  # Exact position
             kt_col_labels.add(col_label)
 
@@ -488,7 +488,7 @@ class SelfAttentionAnimation(Scene):
         q_matrix_label = MathTex(r"Q", font_size=32, color=BLUE)
         q_matrix_label.move_to([(q_right + q_left) / 2, q_top + 0.4, 0])
 
-        kt_matrix_label = MathTex(r"K^T", font_size=32, color=RED)
+        kt_matrix_label = MathTex(r"K^\top", font_size=32, color=RED)
         kt_matrix_label.move_to([(kt_right + kt_left) / 2, kt_top + 0.4, 0])
 
         # Group matrix components
