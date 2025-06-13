@@ -238,7 +238,7 @@ class SelfAttentionAnimation(Scene):
             self.q_vectors.add(vector_group)
 
         # Add Q vectors title
-        q_title = Tex(r"\text{Individual Q Vectors:}", font_size=24, color=BLUE)
+        q_title = Tex(r"\text{Individual Query Vectors:}", font_size=22, color=BLUE)
         q_title.next_to(self.q_vectors, UP, buff=0.5)
 
         self.play(Write(q_title), Create(self.q_vectors))
@@ -284,7 +284,7 @@ class SelfAttentionAnimation(Scene):
             self.kt_vectors.add(vector_group)
 
         # Add K vectors title
-        kt_title = Tex(r"\text{Individual K Vectors:}", font_size=24, color=RED)
+        kt_title = Tex(r"\text{Individual Key Vectors:}", font_size=22, color=RED)
         kt_title.next_to(self.kt_vectors, UP, buff=0.3)
 
         self.play(Write(kt_title), Create(self.kt_vectors))
